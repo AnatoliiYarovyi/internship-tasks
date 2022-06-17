@@ -1,0 +1,28 @@
+{
+  "name": "json-sorting-task",
+  "version": "1.0.0",
+  "description": "json-sorting-task",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index",
+    "start:dev": "nodemon index",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AnatoliiYarovyi/json-sorting-task.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AnatoliiYarovyi/json-sorting-task/issues"
+  },
+  "homepage": "https://github.com/AnatoliiYarovyi/json-sorting-task#readme",
+  "dependencies": {
+    "axios": "^0.25.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}

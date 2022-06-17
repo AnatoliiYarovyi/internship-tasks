@@ -1,0 +1,25 @@
+{
+  "name": "vacation-grouping-task",
+  "version": "1.0.0",
+  "description": "На входе есть JSON, в котором есть разработчики. У каждого уникальный айдишник, имя, а также разные периоды отпусков и прочая информация. Тебе предстоит буквально «причесать» этот JSON в другой, более удобный и универсальный вид.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index",
+    "start:dev": "nodemon index",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AnatoliiYarovyi/vacation-grouping-task.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AnatoliiYarovyi/vacation-grouping-task/issues"
+  },
+  "homepage": "https://github.com/AnatoliiYarovyi/vacation-grouping-task#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}

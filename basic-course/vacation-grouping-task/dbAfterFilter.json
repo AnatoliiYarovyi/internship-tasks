@@ -1,0 +1,80 @@
+[
+  {
+    "userId": "5fff07b70c6f5f594b03d54c",
+    "name": "Yevhenii Ishchenko",
+    "weekendDates": [{ "startDate": "2021-11-02", "endDate": "2021-11-02" }]
+  },
+  {
+    "userId": "5f57b9b3b642eb0017808882",
+    "name": "Dmitry Marchenko",
+    "weekendDates": [{ "startDate": "2021-11-15", "endDate": "2021-11-19" }]
+  },
+  {
+    "userId": "602291efca744a001259baee",
+    "name": "Snezhana Riazantseva",
+    "weekendDates": [
+      { "startDate": "2021-11-04", "endDate": "2021-11-05" },
+      { "startDate": "2021-12-13", "endDate": "2021-12-13" }
+    ]
+  },
+  {
+    "userId": "602666c98465030011abd896",
+    "name": "Oleksii Martynenko",
+    "weekendDates": [{ "startDate": "2021-11-29", "endDate": "2021-12-10" }]
+  },
+  {
+    "userId": "603e4a14b2ab3400117a2bd4",
+    "name": "Anastasiia Koval",
+    "weekendDates": [{ "startDate": "2021-11-22", "endDate": "2021-11-22" }]
+  },
+  {
+    "userId": "5f57b892b642eb0017808876",
+    "name": "Dan Kochetov",
+    "weekendDates": [
+      { "startDate": "2021-11-22", "endDate": "2021-11-22" },
+      { "startDate": "2021-10-20", "endDate": "2021-10-22" },
+      { "startDate": "2021-12-01", "endDate": "2021-12-01" }
+    ]
+  },
+  {
+    "userId": "5fff08fc0c6f5f594b03d54d",
+    "name": "Maksym Simonov",
+    "weekendDates": [{ "startDate": "2021-12-01", "endDate": "2021-12-05" }]
+  },
+  {
+    "userId": "602671015fe2cc0011b9f989",
+    "name": "Ivan Pugach",
+    "weekendDates": [
+      { "startDate": "2021-11-19", "endDate": "2021-11-23" },
+      { "startDate": "2021-12-10", "endDate": "2021-12-12" }
+    ]
+  },
+  {
+    "userId": "60b7c1f04df06a0011ef0e76",
+    "name": "Vladimir Kuzin",
+    "weekendDates": [{ "startDate": "2021-12-09", "endDate": "2021-12-10" }]
+  },
+  {
+    "userId": "60be18161af932001237584b",
+    "name": "Ruslan Kaniuk",
+    "weekendDates": [{ "startDate": "2021-12-01", "endDate": "2021-12-01" }]
+  },
+  {
+    "userId": "604e26d9aed6010012a038f1",
+    "name": "Dzianis Stayehlazau",
+    "weekendDates": [{ "startDate": "2021-12-10", "endDate": "2021-12-10" }]
+  },
+  {
+    "userId": "60c331ff1f37230011191058",
+    "name": "Roman Nahryshko",
+    "weekendDates": [
+      { "startDate": "2021-12-14", "endDate": "2021-12-14" },
+      { "startDate": "2021-12-14", "endDate": "2021-12-14" }
+    ]
+  },
+  {
+    "userId": "6113c7e519e5740011288e40",
+    "name": "Kyrylo Usichenko",
+    "weekendDates": [{ "startDate": "2021-12-14", "endDate": "2021-12-14" }]
+  }
+]

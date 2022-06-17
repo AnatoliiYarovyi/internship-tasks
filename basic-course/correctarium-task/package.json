@@ -1,0 +1,30 @@
+{
+  "name": "correctarium-task",
+  "version": "1.0.0",
+  "description": "correctarium-task",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "start": "node index",
+    "start:dev": "nodemon index"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AnatoliiYarovyi/correctarium-task.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AnatoliiYarovyi/correctarium-task/issues"
+  },
+  "homepage": "https://github.com/AnatoliiYarovyi/correctarium-task#readme",
+  "devDependencies": {
+    "jest": "^27.4.7",
+    "nodemon": "^2.0.15",
+    "prettier": "^2.5.1"
+  },
+  "dependencies": {
+    "express": "^4.17.2"
+  }
+}

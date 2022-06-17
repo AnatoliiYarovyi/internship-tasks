@@ -1,0 +1,46 @@
+{
+  "name": "cryptocurrency-commutator-server-ts",
+  "version": "1.0.0",
+  "description": "cryptocurrency-commutator-server-ts",
+  "main": "index.js",
+  "scripts": {
+    "start": "tsc && node dist/index.js",
+    "start:dev": "nodemon ./src/index.ts",
+    "start:crypt": "tsc && node dist/support/getNewNameCoin",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AnatoliiYarovyi/cryptocurrency-commutator-server-ts.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AnatoliiYarovyi/cryptocurrency-commutator-server-ts/issues"
+  },
+  "homepage": "https://github.com/AnatoliiYarovyi/cryptocurrency-commutator-server-ts#readme",
+  "devDependencies": {
+    "@types/es6-shim": "^0.31.42",
+    "@types/express": "^4.17.13",
+    "@types/node": "^17.0.21",
+    "@types/node-cron": "^3.0.1",
+    "@typescript-eslint/eslint-plugin": "^5.15.0",
+    "@typescript-eslint/parser": "^5.15.0",
+    "eslint": "^8.11.0",
+    "nodemon": "^2.0.15",
+    "prettier": "^2.5.1",
+    "ts-node": "^10.7.0",
+    "typescript": "^4.6.2"
+  },
+  "dependencies": {
+    "axios": "^0.25.0",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.2",
+    "mysql2": "^2.3.3",
+    "node-cron": "^3.0.0",
+    "reflect-metadata": "^0.1.13",
+    "typeorm": "^0.3.0"
+  }
+}

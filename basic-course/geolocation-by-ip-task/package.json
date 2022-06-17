@@ -1,0 +1,28 @@
+{
+  "name": "geolocation-by-ip-task",
+  "version": "1.0.0",
+  "description": "В нашем распоряжении CSV-таблица (**[link](https://www.dropbox.com/s/wo0dexr0p3q4fgb/IP2LOCATION-LITE-DB1.CSV?dl=0)**), в которой длинный перечень строк с диапазонами IP-адресов (от и до  — 1-й и 2-й столбец соответственно), а также страной, которой выданы эти IP.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index",
+    "start:dev": "nodemon index",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AnatoliiYarovyi/geolocation-by-ip-task.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AnatoliiYarovyi/geolocation-by-ip-task/issues"
+  },
+  "homepage": "https://github.com/AnatoliiYarovyi/geolocation-by-ip-task#readme",
+  "dependencies": {
+    "express": "^4.17.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}

@@ -1,0 +1,63 @@
+service: sqs-redistribution
+
+frameworkVersion: '3'
+
+useDotenv: true
+
+plugins:
+    - serverless-layers
+    - serverless-webpack
+
+package:
+    individually: false
+    exclude:
+        - node_modules/**
+
+custom:
+    stage: ${opt:stage, "dev"}
+    region: ${env:AWS_REGION}
+    deploymentBucketName: ${self:custom.stage}-deployment-sqs-redistribution
+    webpack:
+        webpackConfig: webpack.config.ts
+        includeModules: false
+
+provider:
+    name: aws
+    runtime: nodejs16.x
+    stage: ${self:custom.stage}
+    region: ${self:custom.region}
+    environment:
+        QUEUE_URL: { Ref: MyQueue }
+    versionFunctions: false
+    deploymentBucket:
+        name: ${self:custom.deploymentBucketName}
+    apiGateway:
+        apiKeys:
+            - ${env:FIRST_API_KEY}
+            - ${env:SECOND_API_KEY}
+            - ${env:THIRD_API_KEY}
+            - ${env:FOURTH_API_KEY}
+            - ${env:FIFTH_API_KEY}
+    iam:
+        role:
+            statements:
+                - Effect: Allow
+                  Action:
+                      - dynamodb:*
+                  Resource:
+                      - arn:aws:dynamodb:us-east-1:513476794027:table/ShopsSqs
+
+                - Effect: Allow
+                  Action:
+                      - dynamodb:*
+                  Resource:
+                      - arn:aws:dynamodb:us-east-1:513476794027:table/MessagesSqs
+
+                - Effect: Allow
+                  Action:
+                      - SQS:*
+                  Resource:
+                      - arn:aws:sqs:us-east-1:513476794027:RedistributionQueue
+
+functions: ${file(serverless/functions.yml)}
+resources: ${file(serverless/resources.yml)}

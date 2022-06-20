@@ -7,7 +7,7 @@ const { PORT = 3000 } = process.env;
 
 index.use(express.json());
 
-// --- save custom path ---
+// --- save custom path and data ---
 index.post("/:customPath", async function (req, res) {
   try {
     const customPath = req.params.customPath;
@@ -33,7 +33,7 @@ index.post("/:customPath", async function (req, res) {
   }
 });
 
-// --- define custom path ---
+// --- search custom path and send response data ---
 index.get("/:customPath", async function (req, res) {
   try {
     const customPath = req.params.customPath;
@@ -51,7 +51,6 @@ index.get("/:customPath", async function (req, res) {
 // --------work with files ------------
 const filePath = path.join(__dirname, "db", "userPaths.json");
 
-// -------------------------------------------------
 const getAllData = async () => {
   try {
     const data = await fs

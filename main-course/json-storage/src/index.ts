@@ -53,12 +53,9 @@ const filePath = path.join(__dirname, 'db', 'userPaths.json');
 
 const getAllData = async () => {
 	try {
-		const data: string = await fs
-			.readFile(filePath)
-			.then((data) => {
-				return data.toString();
-			})
-			.catch((error) => error);
+		const data: string = await fs.readFile(filePath).then((data) => {
+			return data.toString();
+		});
 		return JSON.parse(data);
 	} catch (error) {
 		throw error;
@@ -67,13 +64,10 @@ const getAllData = async () => {
 
 const writeData = async (data: { path: string; message: any }) => {
 	try {
-		const oldData: { path: string; message: any }[] = await getAllData();
-		const newData = JSON.stringify(oldData.concat(data));
-		await fs
-			.writeFile(filePath, newData)
-			.then((data) => data)
-			.catch((error) => error);
-
+		const allData: { path: string; message: any }[] = await getAllData();
+		allData.push(data);
+		const updateData = JSON.stringify(allData);
+		await fs.writeFile(filePath, updateData);
 		return '';
 	} catch (error) {
 		throw error;

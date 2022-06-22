@@ -59,7 +59,13 @@ const cli = () => {
 			writeData(answers);
 			cli();
 		} else if (answers.findName) {
-			getData(answers.findName).then((data) => console.log(data));
+			getData(answers.findName).then((data) => {
+				if (data) {
+					console.log(`Success!!!\n`, data);
+				} else {
+					console.log('Sorry, but this user is not in the DB');
+				}
+			});
 		} else {
 			return console.log('Good by!');
 		}

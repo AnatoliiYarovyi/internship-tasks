@@ -18,6 +18,11 @@ const getSortWordsSmall = (arr) => {
 	return arrWords.sort((a, b) => b.length - a.length);
 };
 
+const getUniqueArrWords = (arr) => {
+	const arrWords = getArrWords(arr);
+	return [...new Set(arrWords)].sort();
+};
+
 const getUniqueArr = (arr) => {
 	return [...new Set(arr)].sort();
 };
@@ -56,5 +61,6 @@ export {
 	getSortNumberSmall,
 	getSortNumberBig,
 	getSortWordsSmall,
+	getUniqueArrWords,
 	getUniqueArr,
 };

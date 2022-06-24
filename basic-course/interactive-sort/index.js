@@ -4,6 +4,7 @@ import {
 	getSortNumberSmall,
 	getSortNumberBig,
 	getSortWordsSmall,
+	getUniqueArrWords,
 	getUniqueArr,
 	trimSpaces,
 } from './functions.js';
@@ -34,8 +35,8 @@ const cli = () => {
 
 const selectFilter = (arr) => {
 	rl.question(
-		`*** How would you like to sort values?: ***\n1. Words by name (from A to Z).\n2. Show digits from the smallests.\n3. Show digits from the bigest.\n4. Words by quantity of leters.\n5. Only unique values.
-          \nSelect (1 - 5) or "exit" and press ENTER: `,
+		`*** How would you like to sort values?: ***\n1. Words by name (from A to Z).\n2. Show digits from the smallests.\n3. Show digits from the bigest.\n4. Words by quantity of leters.\n5. Only unique words.\n6. Only unique values.
+          \nSelect (1 - 6) or "exit" and press ENTER: `,
 		(answer) => {
 			const value = trimSpaces(answer.split(' '));
 			switch (value[0]) {
@@ -60,6 +61,11 @@ const selectFilter = (arr) => {
 					break;
 
 				case '5':
+					console.log(getUniqueArrWords(arr));
+					cli();
+					break;
+
+				case '6':
 					console.log(getUniqueArr(arr));
 					cli();
 					break;

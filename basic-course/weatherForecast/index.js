@@ -17,19 +17,22 @@ bot.onText(/\/start/, (msg) => {
 });
 
 bot.onText(/\/Weather/, (msg) => {
-  bot.sendMessage(msg.chat.id, "Оберіть інтервал часу", {
-    reply_markup: {
-      keyboard: [
-        ["Кожні 3 години", "Кожні 6 годин"],
-        ["Вітер"],
-        ["Попередне меню"],
-      ],
-    },
-  });
+  bot.sendMessage(
+    msg.chat.id,
+    "Оберіть інтервал часу або дізнайтесь швидкість вітру",
+    {
+      reply_markup: {
+        keyboard: [
+          ["Кожні 3 години", "Кожні 6 годин"],
+          ["Вітер"],
+          ["Попередне меню"],
+        ],
+      },
+    }
+  );
 });
 
 bot.on("message", async (msg) => {
-  console.log("msg: ", msg);
   if (!msg.entities) {
     const chatId = msg.chat.id;
 
@@ -57,9 +60,5 @@ bot.on("message", async (msg) => {
       default:
         console.log("Invalid subscription type");
     }
-
-    // const message = msg.text.toString().trim();
-
-    // process.exit();
   }
 });

@@ -7,10 +7,12 @@ import fs from 'fs';
 import { google } from 'googleapis';
 
 import { cli, getShortPath } from './cli.js';
-import credentials from './credentials.json' assert { type: 'json' };
 
 const {
   PORT = 5000,
+  CLIENT_ID,
+  CLIENT_SECRET,
+  REDIRECT_URIS,
   TOKEN,
   REFRESH_TOKEN,
   SCOPE_TOKEN,
@@ -18,11 +20,10 @@ const {
   ID_TOKEN,
   EXPIRY_DATE,
 } = process.env;
-const { client_id, client_secret, redirect_uris } = credentials.web;
 const oAuth2Client = new google.auth.OAuth2(
-  client_id,
-  client_secret,
-  redirect_uris[0],
+  CLIENT_ID,
+  CLIENT_SECRET,
+  REDIRECT_URIS,
 );
 
 const SCOPE = [

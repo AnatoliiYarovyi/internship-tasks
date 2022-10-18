@@ -278,6 +278,7 @@ resources:
                 - '*'
               AllowedMethods:
                 - GET
+                - POST
                 - PUT
                 - HEAD
               AllowedOrigins:

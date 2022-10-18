@@ -42,7 +42,7 @@ const handler = async (event: Event) => {
     },
     Conditions: [
       ['content-length-range', 0, 10000000], // content length restrictions: 0-10MB
-      ['starts-with', '$Content-Type', 'image/'], // content type restriction
+      ['starts-with', '$Content-Type', ''], // content type restriction
       { acl: 'public-read' },
     ],
   };

@@ -9,7 +9,7 @@ const queryPhotosPhotographer = async (
       FROM photos AS p
       JOIN albums AS a ON p.albumId = a.albumId 
       JOIN photographers AS p2 ON a.photographerId = p2.photographerId
-      WHERE a.albumId = '${albumId}' AND p2.nickname = '${nickname}'`;
+      WHERE a.albumId = '${albumId}' AND p2.nickname = '${nickname}' AND p.loaded  = 1`;
 
   const [result, fields] = await connection.query(query);
   console.log('\n**** result ***', result, '\n**** fields ***', fields);

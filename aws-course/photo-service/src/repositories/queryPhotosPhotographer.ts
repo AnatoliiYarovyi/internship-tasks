@@ -5,7 +5,7 @@ const queryPhotosPhotographer = async (
   nickname: string,
   albumId: number,
 ) => {
-  const query = `SELECT p.photoId, p.imageLink, a.albumName  
+  const query = `SELECT p.photoId, p.photoLink, a.albumName  
       FROM photos AS p
       JOIN albums AS a ON p.albumId = a.albumId 
       JOIN photographers AS p2 ON a.photographerId = p2.photographerId

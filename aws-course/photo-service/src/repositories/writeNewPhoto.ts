@@ -7,7 +7,7 @@ const writeNewPhoto = async (
   albumId: number,
 ) => {
   const writePhotoData =
-    'INSERT INTO `photos` (name, imageLink, albumId) VALUES (?, ?, ?)';
+    'INSERT INTO `photos` (name, photoLink, albumId) VALUES (?, ?, ?)';
 
   const [rows, fields] = await connection.execute(writePhotoData, [
     name,

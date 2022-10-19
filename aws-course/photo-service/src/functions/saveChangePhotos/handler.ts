@@ -1,15 +1,16 @@
 import Boom from '@hapi/boom';
 import mysql from 'mysql2/promise';
 
-import updatePhotosLoaded from '../../repositories/updatePhotosLoaded';
-import addWatermarkToPhotos from './addWatermarkToPhotos';
 import getBufferImg from './getBufferImg';
 import resizePhotos from './resizePhotos';
+import updatePhotoLinks from '../../repositories/updatePhotoLinks';
+import updatePhotosLoaded from '../../repositories/updatePhotosLoaded';
+import addWatermarkToPhotos from './addWatermarkToPhotos';
 
 const handler = async (event: any) => {
   const connection = await mysql.createConnection(process.env.DATABASE_URL);
 
-  console.log('\n*** This is Event after save S3 ***', JSON.stringify(event));
+  // console.log('\n*** This is Event after save S3 ***', JSON.stringify(event));
   // console.log('\nimage path: ', event.Records[0].s3.object.key);
 
   const key: string = event.Records[0].s3.object.key;
@@ -17,32 +18,32 @@ const handler = async (event: any) => {
     console.log('Stoped function saveChangePhotos');
     return;
   }
-  const imageLink = `https://photos-from-photo-service.s3.amazonaws.com/${key}`;
+  const photoLink = `https://photos-from-photo-service.s3.amazonaws.com/${key}`;
   const arrKeyData = key.split('/');
   const permission = arrKeyData[0];
-  const imageName = arrKeyData.slice(-1)[0].replace('.jpeg', '');
+  const photoName = arrKeyData.slice(-1)[0].replace('.jpeg', '');
 
-  console.log(
-    '\npermission',
-    permission,
-    '\nimageName',
-    imageName,
-    '\nimageLink',
-    imageLink,
-  );
+  // console.log(
+  //   '\npermission',
+  //   permission,
+  //   'photoName',
+  //   photoName,
+  //   '\nphotoLink',
+  //   photoLink,
+  // );
 
   switch (permission) {
     case 'clients':
       // await writeClientsSelfieLink(
       //   connection,
-      //   imageName,
+      //   photoName,
       // );
       break;
 
     case 'photographers':
-      await updatePhotosLoaded(connection, imageName);
+      await updatePhotosLoaded(connection, photoName);
 
-      const bufferPhoto = await getBufferImg(imageLink);
+      const bufferPhoto = await getBufferImg(photoLink);
 
       const dataSmallPhoto = await resizePhotos(bufferPhoto, key);
 
@@ -53,13 +54,13 @@ const handler = async (event: any) => {
         dataDemoPhoto.Key,
       );
 
-      console.log('\n*** dataSmallPhoto ***', JSON.stringify(dataSmallPhoto));
-      console.log('\n*** dataDemoPhoto ***', JSON.stringify(dataDemoPhoto));
-      console.log(
-        '\n*** dataSmallDemoPhoto ***',
-        JSON.stringify(dataSmallDemoPhoto),
+      await updatePhotoLinks(
+        connection,
+        photoName,
+        dataSmallPhoto.Location,
+        dataDemoPhoto.Location,
+        dataSmallDemoPhoto.Location,
       );
-
       break;
 
     default:

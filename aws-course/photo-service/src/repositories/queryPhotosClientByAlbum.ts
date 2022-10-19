@@ -5,7 +5,7 @@ const queryPhotosClientByAlbum = async (
   phone: string,
   albumId: number,
 ) => {
-  const query = `SELECT p.photoId, a.albumName, p.name AS photoName, p.imageLink
+  const query = `SELECT p.photoId, a.albumName, p.name AS photoName, p.photoLink
 FROM clients_photos AS cp
 JOIN clients AS c ON cp.clientId = c.clientId 
 JOIN photos AS p ON cp.photoId = p.photoId

@@ -44,20 +44,20 @@ const handler = async (event: any) => {
 
       const bufferPhoto = await getBufferImg(imageLink);
 
-      const dataResizePhoto = await resizePhotos(bufferPhoto, key);
+      const dataSmallPhoto = await resizePhotos(bufferPhoto, key);
 
       const dataDemoPhoto = await addWatermarkToPhotos(bufferPhoto, key);
       const bufferDemoPhoto = await getBufferImg(dataDemoPhoto.Location);
-      const dataResizeDemoPhoto = await resizePhotos(
+      const dataSmallDemoPhoto = await resizePhotos(
         bufferDemoPhoto,
         dataDemoPhoto.Key,
       );
 
-      console.log('\n*** dataResizePhoto ***', JSON.stringify(dataResizePhoto));
+      console.log('\n*** dataSmallPhoto ***', JSON.stringify(dataSmallPhoto));
       console.log('\n*** dataDemoPhoto ***', JSON.stringify(dataDemoPhoto));
       console.log(
-        '\n*** dataResizeDemoPhoto ***',
-        JSON.stringify(dataResizeDemoPhoto),
+        '\n*** dataSmallDemoPhoto ***',
+        JSON.stringify(dataSmallDemoPhoto),
       );
 
       break;

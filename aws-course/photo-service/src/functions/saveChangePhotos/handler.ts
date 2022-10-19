@@ -2,7 +2,9 @@ import Boom from '@hapi/boom';
 import mysql from 'mysql2/promise';
 
 import updatePhotosLoaded from '../../repositories/updatePhotosLoaded';
-import addWatermarkToPhoto from './addWatermarkToPhoto';
+import addWatermarkToPhotos from './addWatermarkToPhotos';
+import getBufferImg from './getBufferImg';
+import resizePhotos from './resizePhotos';
 
 const handler = async (event: any) => {
   const connection = await mysql.createConnection(process.env.DATABASE_URL);
@@ -11,7 +13,7 @@ const handler = async (event: any) => {
   // console.log('\nimage path: ', event.Records[0].s3.object.key);
 
   const key: string = event.Records[0].s3.object.key;
-  if (key.includes('Demo')) {
+  if (key.includes('Demo') || key.includes('Resize')) {
     console.log('Stoped function saveChangePhotos');
     return;
   }
@@ -39,8 +41,24 @@ const handler = async (event: any) => {
 
     case 'photographers':
       await updatePhotosLoaded(connection, imageName);
-      const dataDemoPhoto = await addWatermarkToPhoto(imageLink, key);
+
+      const bufferPhoto = await getBufferImg(imageLink);
+
+      const dataResizePhoto = await resizePhotos(bufferPhoto, key);
+
+      const dataDemoPhoto = await addWatermarkToPhotos(bufferPhoto, key);
+      const bufferDemoPhoto = await getBufferImg(dataDemoPhoto.Location);
+      const dataResizeDemoPhoto = await resizePhotos(
+        bufferDemoPhoto,
+        dataDemoPhoto.Key,
+      );
+
+      console.log('\n*** dataResizePhoto ***', JSON.stringify(dataResizePhoto));
       console.log('\n*** dataDemoPhoto ***', JSON.stringify(dataDemoPhoto));
+      console.log(
+        '\n*** dataResizeDemoPhoto ***',
+        JSON.stringify(dataResizeDemoPhoto),
+      );
 
       break;
 

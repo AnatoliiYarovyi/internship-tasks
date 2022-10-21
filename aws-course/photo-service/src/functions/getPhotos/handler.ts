@@ -31,7 +31,6 @@ const handler = async (event: Event) => {
         nickname,
         albumId,
       );
-      console.log('\n*** Data queryPhotosClientByAlbum ***', dataPhotos);
 
       dataDB = sortClientPhotos(dataPhotos);
       break;

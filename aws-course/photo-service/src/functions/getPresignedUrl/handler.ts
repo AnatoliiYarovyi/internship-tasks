@@ -96,8 +96,6 @@ const handler = async (event: Event) => {
       console.log('Invalid permission type');
   }
 
-  // presignedPostData.data.fields['Content-type'] = 'image/jpeg'; // delete later!
-
   return {
     status: 'success',
     s3Data: presignedPostData.data,

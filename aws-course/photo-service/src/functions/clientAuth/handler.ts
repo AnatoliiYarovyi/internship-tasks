@@ -19,7 +19,6 @@ const handler = async (
   const { connection, phone, otp } = event.body;
 
   const verifyData = await verifyOTP(phone, otp);
-  console.log('\n*** verifyData ***', verifyData);
 
   if (verifyData.verify === false) {
     return {
@@ -33,8 +32,6 @@ const handler = async (
       .catch(error => {
         throw Boom.badImplementation(error);
       });
-
-    // console.log('\n*** currentUserDb: ***', currentUserDb);
 
     let token = '';
     if (currentUserDb.Item === undefined) {

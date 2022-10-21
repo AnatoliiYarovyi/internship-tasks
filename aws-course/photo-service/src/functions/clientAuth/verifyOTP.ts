@@ -13,28 +13,29 @@ const verifyOTP = async (phone: string, otp: string) => {
       throw Boom.badImplementation(error);
     });
 
-  if (dataOTP.Item) {
-    if (dataOTP.Item.otp !== otp) {
-      message = 'One time password failed verification.';
+  console.log('\n*** dataOTP ***', dataOTP);
 
-      return { verify, message };
-    }
-
-    const currentTime = new Date().getTime();
-    const timeOfCreatedOTP: number = dataOTP.Item.created;
-    const lifetimeOTP = currentTime - timeOfCreatedOTP;
-    if (lifetimeOTP > 180000) {
-      message = 'One time password has expired';
-
-      return { verify, message };
-    }
-
-    if (dataOTP.Item.OTP === otp) {
-      verify = true;
-    }
-
+  if (dataOTP.Item.otp !== otp) {
+    message = 'One time password failed verification.';
     return { verify, message };
   }
+
+  const currentTime = new Date().getTime();
+  const timeOfCreatedOTP: number = dataOTP.Item.created;
+  const lifetimeOTP = currentTime - timeOfCreatedOTP;
+
+  if (lifetimeOTP > 180000) {
+    message = 'One time password has expired';
+    // return { verify, message };
+  }
+
+  if (dataOTP.Item.otp === otp) {
+    verify = true;
+    message = 'otp verification passed';
+    // return { verify, message };
+  }
+
+  return { verify, message };
 };
 
 export default verifyOTP;

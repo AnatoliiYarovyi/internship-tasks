@@ -47,7 +47,7 @@ const handler = async (event: Event) => {
     ],
   };
 
-  const presignedPostData = {
+  const presignedPostData: any = {
     data: {},
   };
   s3.createPresignedPost(params, function (err, data) {
@@ -95,6 +95,8 @@ const handler = async (event: Event) => {
     default:
       console.log('Invalid permission type');
   }
+
+  // presignedPostData.data.fields['Content-type'] = 'image/jpeg'; // delete later!
 
   return {
     status: 'success',

@@ -25,10 +25,11 @@ export interface Event {
     album: string;
   };
   queryStringParameters: {
-    permission: string;
-    clientId: string;
-    albumId: number;
     albumName: string;
+    permission: string;
+    albumId: number;
+    clientId: string;
+    photoId: number;
   };
 }
 

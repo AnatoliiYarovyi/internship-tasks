@@ -3,6 +3,9 @@ import Boom from '@hapi/boom';
 
 import { middyfy } from '../../libs/lambda';
 import { Event } from '../../interface/interface';
+
+import sortClientPhotos from './sortClientPhotos';
+
 import queryPhotosClientByAlbum from '../../repositories/queryPhotosClientByAlbum';
 import queryPhotosPhotographer from '../../repositories/queryPhotosPhotographer';
 
@@ -23,7 +26,14 @@ const handler = async (event: Event) => {
   let dataDB = null;
   switch (permission) {
     case 'client':
-      dataDB = await queryPhotosClientByAlbum(connection, nickname, albumId);
+      const dataPhotos = await queryPhotosClientByAlbum(
+        connection,
+        nickname,
+        albumId,
+      );
+      console.log('\n*** Data queryPhotosClientByAlbum ***', dataPhotos);
+
+      dataDB = sortClientPhotos(dataPhotos);
       break;
 
     case 'photographer':

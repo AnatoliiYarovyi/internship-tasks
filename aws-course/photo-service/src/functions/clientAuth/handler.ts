@@ -18,11 +18,10 @@ const handler = async (
   const dynamodb = new AWS.DynamoDB.DocumentClient();
   const { connection, phone, otp } = event.body;
 
-  console.log('\n*** clientAuth start ***');
-
   const verifyData = await verifyOTP(phone, otp);
+  console.log('\n*** verifyData ***', verifyData);
 
-  if (verifyData !== undefined && verifyData.verify === false) {
+  if (verifyData.verify === false) {
     return {
       status: 'success',
       message: verifyData.message,
@@ -37,7 +36,7 @@ const handler = async (
 
     // console.log('\n*** currentUserDb: ***', currentUserDb);
 
-    let token: string | undefined = '';
+    let token = '';
     if (currentUserDb.Item === undefined) {
       // signUn new User
       console.log('currentUserDb.Item === undefined');
@@ -57,4 +56,4 @@ const handler = async (
   }
 };
 
-export const clientAuth = middyfy(handler)
+export const clientAuth = middyfy(handler);

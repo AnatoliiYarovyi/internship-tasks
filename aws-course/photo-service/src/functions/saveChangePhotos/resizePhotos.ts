@@ -8,9 +8,9 @@ const resizePhotos = async (buff: Buffer, key: string) => {
   let path: string = '';
 
   if (key.includes('Demo')) {
-    path = key.replace('Demo.jpeg', 'DemoResize.jpeg');
+    path = key.replace('Demo.jpeg', 'DemoSmall.jpeg');
   } else {
-    path = key.replace('.jpeg', 'Resize.jpeg');
+    path = key.replace('.jpeg', 'Small.jpeg');
   }
 
   const sharpBuffer = await sharp(buff).resize(150, 150).toBuffer();

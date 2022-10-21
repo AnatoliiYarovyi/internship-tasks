@@ -3,9 +3,12 @@ import mysql from 'mysql2/promise';
 
 import getBufferImg from './getBufferImg';
 import resizePhotos from './resizePhotos';
+import saveCurrentSelfie from './saveCurrentSelfie';
+import addWatermarkToPhotos from './addWatermarkToPhotos';
+
 import updatePhotoLinks from '../../repositories/updatePhotoLinks';
 import updatePhotosLoaded from '../../repositories/updatePhotosLoaded';
-import addWatermarkToPhotos from './addWatermarkToPhotos';
+import updateSelfiesLoaded from '../../repositories/updateSelfiesLoaded';
 
 const handler = async (event: any) => {
   const connection = await mysql.createConnection(process.env.DATABASE_URL);
@@ -34,10 +37,9 @@ const handler = async (event: any) => {
 
   switch (permission) {
     case 'clients':
-      // await writeClientsSelfieLink(
-      //   connection,
-      //   photoName,
-      // );
+      await updateSelfiesLoaded(connection, photoName);
+      const nickname = arrKeyData[2];
+      await saveCurrentSelfie(nickname, photoLink);
       break;
 
     case 'photographers':

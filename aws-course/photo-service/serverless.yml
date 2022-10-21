@@ -166,12 +166,12 @@ functions:
             claims:
               - nickname
 
-  getUsersData:
-    handler: src/functions/getUsersData/handler.getUsersData
+  getPhotographersData:
+    handler: src/functions/getPhotographersData/handler.getPhotographersData
     events:
       - http:
           cors: true
-          path: /getUsersData
+          path: /getPhotographersData
           method: get
 
   generateOTP:
@@ -182,20 +182,20 @@ functions:
           path: /generateOTP
           method: post
 
-  clientAuth:
-    handler: src/functions/clientAuth/handler.clientAuth
-    events:
-      - http:
-          cors: true
-          path: /clientAuth
-          method: post
-
   resendOTP:
     handler: src/functions/resendOTP/handler.resendOTP
     events:
       - http:
           cors: true
           path: /resendOTP
+          method: post
+
+  clientAuth:
+    handler: src/functions/clientAuth/handler.clientAuth
+    events:
+      - http:
+          cors: true
+          path: /clientAuth
           method: post
 
   saveClientData:
@@ -215,12 +215,46 @@ functions:
             claims:
               - nickname
 
+  getClientsData:
+    handler: src/functions/getClientsData/handler.getClientsData
+    events:
+      - http:
+          cors: true
+          path: /getClientsData
+          method: get
+          authorizer:
+            name: PrivateAuthorizer
+            type: COGNITO_USER_POOLS
+            arn:
+              Fn::GetAtt:
+                - UserPool
+                - Arn
+            claims:
+              - nickname
+
   getAlbumsAndPhotos:
     handler: src/functions/getAlbumsAndPhotos/handler.getAlbumsAndPhotos
     events:
       - http:
           cors: true
           path: /getAlbumsAndPhotos
+          method: get
+          authorizer:
+            name: PrivateAuthorizer
+            type: COGNITO_USER_POOLS
+            arn:
+              Fn::GetAtt:
+                - UserPool
+                - Arn
+            claims:
+              - nickname
+
+  unlockPhoto:
+    handler: src/functions/unlockPhoto/handler.unlockPhoto
+    events:
+      - http:
+          cors: true
+          path: /unlockPhoto
           method: get
           authorizer:
             name: PrivateAuthorizer

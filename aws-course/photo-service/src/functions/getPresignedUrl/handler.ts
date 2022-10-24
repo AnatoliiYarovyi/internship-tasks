@@ -41,7 +41,7 @@ const handler = async (event: Event) => {
       acl: 'public-read',
     },
     Conditions: [
-      ['content-length-range', 0, 10000000], // content length restrictions: 0-10MB
+      ['content-length-range', 100, 10000000], // content length restrictions: 100kB-10MB
       ['starts-with', '$Content-Type', ''], // content type restriction
       { acl: 'public-read' },
     ],
@@ -87,7 +87,7 @@ const handler = async (event: Event) => {
         for (let i = 0; i < arrClientId.length; i += 1) {
           console.log(arrClientId[i]);
           const clientId = +arrClientId[i];
-          await writeClientPhoto(connection, clientId, photoId);
+          await writeClientPhoto(connection, clientId, photoId, albumId);
         }
       }
       break;

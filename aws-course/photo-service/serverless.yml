@@ -106,8 +106,8 @@ functions:
             claims:
               - nickname
 
-  saveChangePhotos:
-    handler: src/functions/saveChangePhotos/handler.saveChangePhotos
+  changeSavePhotos:
+    handler: src/functions/changeSavePhotos/handler.changeSavePhotos
     events:
       - s3:
           bucket: ${self:custom.fileUploadBucketName}

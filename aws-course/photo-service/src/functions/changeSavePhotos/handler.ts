@@ -17,7 +17,7 @@ const handler = async (event: any) => {
   // console.log('\nimage path: ', event.Records[0].s3.object.key);
 
   const key: string = event.Records[0].s3.object.key;
-  if (key.includes('Demo') || key.includes('Resize')) {
+  if (key.includes('Demo') || key.includes('Small')) {
     console.log('Stoped function saveChangePhotos');
     return;
   }
@@ -78,4 +78,4 @@ const handler = async (event: any) => {
   });
 };
 
-export const saveChangePhotos = handler;
+export const changeSavePhotos = handler;

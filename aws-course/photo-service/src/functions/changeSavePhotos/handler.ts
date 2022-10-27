@@ -9,6 +9,8 @@ import addWatermarkToPhotos from './addWatermarkToPhotos';
 import updatePhotoLinks from '../../repositories/updatePhotoLinks';
 import updatePhotosLoaded from '../../repositories/updatePhotosLoaded';
 import updateSelfiesLoaded from '../../repositories/updateSelfiesLoaded';
+import saveAlbumCover from './saveAlbumCover';
+import queryCurrentPhotoId from '../../repositories/queryCurrentPhotoId';
 
 const handler = async (event: any) => {
   const connection = await mysql.createConnection(process.env.DATABASE_URL);
@@ -17,6 +19,7 @@ const handler = async (event: any) => {
   // console.log('\nimage path: ', event.Records[0].s3.object.key);
 
   const key: string = event.Records[0].s3.object.key;
+
   if (key.includes('Demo') || key.includes('Small')) {
     console.log('Stoped function saveChangePhotos');
     return;
@@ -26,15 +29,6 @@ const handler = async (event: any) => {
   const permission = arrKeyData[0];
   const photoName = arrKeyData.slice(-1)[0].replace('.jpeg', '');
 
-  // console.log(
-  //   '\npermission',
-  //   permission,
-  //   'photoName',
-  //   photoName,
-  //   '\nphotoLink',
-  //   photoLink,
-  // );
-
   switch (permission) {
     case 'clients':
       await updateSelfiesLoaded(connection, photoName);
@@ -43,7 +37,9 @@ const handler = async (event: any) => {
       break;
 
     case 'photographers':
-      await updatePhotosLoaded(connection, photoName);
+      const photoId = await queryCurrentPhotoId(connection, photoName);
+
+      await updatePhotosLoaded(connection, photoId);
 
       const bufferPhoto = await getBufferImg(photoLink);
 
@@ -58,11 +54,14 @@ const handler = async (event: any) => {
 
       await updatePhotoLinks(
         connection,
-        photoName,
+        photoId,
         dataSmallPhoto.Location,
         dataDemoPhoto.Location,
         dataSmallDemoPhoto.Location,
       );
+
+      await saveAlbumCover(connection, photoId, dataSmallPhoto.Location);
+
       break;
 
     default:

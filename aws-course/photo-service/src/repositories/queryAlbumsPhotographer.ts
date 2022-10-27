@@ -4,7 +4,7 @@ const queryAlbumsPhotographer = async (
   connection: mysql.Connection,
   nickname: string,
 ) => {
-  const query = `SELECT a.albumId, a.albumName, a.location, a.specifiedTimestamp 
+  const query = `SELECT a.albumId, a.albumName, a.location, a.specifiedTimestamp, a.albumCoverLink
 FROM albums AS a 
 JOIN photographers AS p ON a.photographerId = p.photographerId  
 WHERE p.nickname = '${nickname}'`;

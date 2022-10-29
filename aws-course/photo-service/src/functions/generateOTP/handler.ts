@@ -34,7 +34,6 @@ const handler = async (event: EventBody<{ phone: string }>) => {
   return {
     status: 'success',
     message: 'generateOTP successful',
-    otp: newOTP.otp,
   };
 };
 

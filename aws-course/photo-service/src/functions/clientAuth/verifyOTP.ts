@@ -24,9 +24,7 @@ const verifyOTP = async (phone: string, otp: string) => {
 
   if (lifetimeOTP > 180000) {
     message = 'One time password has expired';
-  }
-
-  if (dataOTP.Item.otp === otp) {
+  } else if (dataOTP.Item.otp === otp) {
     verify = true;
     message = 'otp verification passed';
   }

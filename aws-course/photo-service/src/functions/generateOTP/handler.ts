@@ -4,7 +4,7 @@ import { v4 } from 'uuid';
 
 import { middyfy } from '../../libs/lambda';
 import { EventBody } from '../../interface/interface';
-import validateSchemas from './validateSchema';
+// import validateSchemas from './validateSchema';
 import botSendOTP from '../botSendOTP/botSendOTP';
 
 const handler = async (event: EventBody<{ phone: string }>) => {
@@ -37,4 +37,5 @@ const handler = async (event: EventBody<{ phone: string }>) => {
   };
 };
 
-export const generateOTP = middyfy(handler, validateSchemas);
+// export const generateOTP = middyfy(handler, validateSchemas);
+export const generateOTP = middyfy(handler);

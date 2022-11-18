@@ -249,12 +249,12 @@ functions:
             claims:
               - nickname
 
-  unlockPhoto:
-    handler: src/functions/unlockPhoto/handler.unlockPhoto
+  getPaymentLink:
+    handler: src/functions/getPaymentLink/handler.getPaymentLink
     events:
       - http:
           cors: true
-          path: /unlockPhoto
+          path: /getPaymentLink
           method: get
           authorizer:
             name: PrivateAuthorizer
@@ -265,6 +265,14 @@ functions:
                 - Arn
             claims:
               - nickname
+
+  webhook:
+    handler: src/functions/webhook/handler.webhook
+    events:
+      - http:
+          cors: true
+          path: /webhook
+          method: post
 
 resources:
   Resources:

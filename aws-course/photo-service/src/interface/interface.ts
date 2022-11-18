@@ -5,6 +5,7 @@ export interface EventBody<T> {
 }
 
 export interface Event {
+  headers: any;
   body: {
     connection: mysql.Connection;
     albumName: string;
@@ -30,6 +31,7 @@ export interface Event {
     albumId: number;
     clientId: string;
     photoId: number;
+    nickname: string;
   };
 }
 

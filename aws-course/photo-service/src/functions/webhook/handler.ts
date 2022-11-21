@@ -32,7 +32,7 @@ const handler = async event => {
 
     await updateUnlockedPhoto(connection, albumId, nickname);
   }
-  console.log('\n*** eventWebhook.type ***', eventWebhook.type);
+  // console.log('\n*** eventWebhook.type ***', eventWebhook.type);
 
   const data = {
     statusCode: 200,

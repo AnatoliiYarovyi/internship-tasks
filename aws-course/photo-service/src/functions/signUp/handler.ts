@@ -46,7 +46,7 @@ const handler = async (
     });
 
   // console.log('*** response ***: ', response);
-  console.log('*** response ***: ', JSON.stringify(response));
+  // console.log('*** response ***: ', JSON.stringify(response));
 
   const newUser = {
     id: v4(),

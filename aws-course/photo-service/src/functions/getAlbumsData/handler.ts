@@ -25,7 +25,7 @@ const handler = async (event: Event) => {
 
     case 'photographer':
       dataDB = await queryAlbumsPhotographer(connection, nickname);
-      console.log('\n*** allAlbumsName: ****', dataDB);
+      // console.log('\n*** allAlbumsName: ****', dataDB);
       break;
 
     default:

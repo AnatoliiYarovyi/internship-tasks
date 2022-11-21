@@ -52,6 +52,7 @@ const middlewareConnectionDB = (): middy.MiddlewareObj<
   APIGatewayProxyResult
 > => {
   const before: middy.MiddlewareFn = async (request): Promise<void> => {
+    // *** to connect to AWS RDS ***
     // const { DB_HOST, DB_USER, DB_USER_PASS, DB_NAME } = process.env;
 
     // const connection = await mysql.createConnection({
@@ -61,6 +62,7 @@ const middlewareConnectionDB = (): middy.MiddlewareObj<
     //   database: DB_NAME,
     // });
 
+    // *** to connect to PlanetScale ***
     const connection = await mysql.createConnection(process.env.DATABASE_URL);
 
     if (request.event.body !== null) {

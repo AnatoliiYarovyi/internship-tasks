@@ -29,12 +29,12 @@ const handler = async (
     };
   } else {
     // Generate a new secret login code write to DB and send it to the user
-    const secretLoginCode = Date.now().toString().slice(-4);
+    // const secretLoginCode = Date.now().toString().slice(-4); // this is temporary for ease of development
 
     const newOTP = {
       id: v4(),
       phone,
-      // OTP: secretLoginCode,
+      // OTP: secretLoginCode, // this is temporary for ease of development
       otp: 111111, // this is temporary for ease of development
       numberOfResend: dataOTP.Item.numberOfResend + 1,
       created: dataOTP.Item.created,

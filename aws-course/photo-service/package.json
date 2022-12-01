@@ -4,9 +4,12 @@
   "description": "photo-service",
   "main": "index.js",
   "scripts": {
-    "start:dev": "serverless offline start",
-    "deploy": "serverless deploy",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "serverless offline start",
+    "devDeploy": "serverless deploy --stage dev",
+    "testDeploy": "serverless deploy --stage test",
+    "prodDeploy": "serverless deploy --verbose --stage prod",
+    "uneploy": "serverless remove",
+    "lint": "eslint --ext .ts ./src --fix"
   },
   "keywords": [],
   "author": "",

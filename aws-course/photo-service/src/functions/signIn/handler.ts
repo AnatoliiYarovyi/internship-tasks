@@ -5,18 +5,19 @@ import { middyfy } from '../../libs/lambda';
 import { EventBody } from '../../interface/interface';
 import validateSchemas from './validateSchema';
 
+const { USER_POOL_ID, CLIENT_ID } = process.env;
+
 const handler = async (
   event: EventBody<{ nickname: string; password: string }>,
 ) => {
   const cognito = new AWS.CognitoIdentityServiceProvider();
 
   const { nickname, password } = event.body;
-  const { user_pool_id, client_id } = process.env;
 
   const params = {
     AuthFlow: 'ADMIN_NO_SRP_AUTH',
-    UserPoolId: user_pool_id,
-    ClientId: client_id,
+    UserPoolId: USER_POOL_ID,
+    ClientId: CLIENT_ID,
     AuthParameters: {
       USERNAME: nickname,
       PASSWORD: password,

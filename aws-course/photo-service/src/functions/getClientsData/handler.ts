@@ -4,13 +4,15 @@ import Boom from '@hapi/boom';
 import { middyfy } from '../../libs/lambda';
 import { Event } from '../../interface/interface';
 
+const TABLE_NAME = process.env.USERS_TABLE_NAME;
+
 const handler = async (event: Event) => {
   const dynamodb = new AWS.DynamoDB.DocumentClient();
 
   const nickname = event.requestContext.authorizer.claims.nickname;
 
   const currentUserDb = await dynamodb
-    .get({ TableName: 'UsersPhotoService', Key: { nickname: nickname } })
+    .get({ TableName: TABLE_NAME, Key: { nickname: nickname } })
     .promise()
     .catch(error => {
       throw Boom.badImplementation(error);

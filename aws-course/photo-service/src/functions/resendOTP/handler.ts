@@ -7,6 +7,8 @@ import { EventBody } from '../../interface/interface';
 import validateSchemas from './validateSchema';
 import botSendOTP from '../botSendOTP/botSendOTP';
 
+const TABLE_NAME = process.env.CLIENTS_OTP_TABLE_NAME;
+
 const handler = async (
   event: EventBody<{
     phone: string;
@@ -16,7 +18,7 @@ const handler = async (
   const { phone } = event.body;
 
   const dataOTP = await dynamodb
-    .get({ TableName: 'ClientsOTP', Key: { phone } })
+    .get({ TableName: TABLE_NAME, Key: { phone } })
     .promise()
     .catch(error => {
       throw Boom.badImplementation(error);
@@ -40,7 +42,7 @@ const handler = async (
       created: dataOTP.Item.created,
     };
     await dynamodb
-      .put({ TableName: 'ClientsOTP', Item: newOTP })
+      .put({ TableName: TABLE_NAME, Item: newOTP })
       .promise()
       .catch(error => {
         throw Boom.badImplementation(error);

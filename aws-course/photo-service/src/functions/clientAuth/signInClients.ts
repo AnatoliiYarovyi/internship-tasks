@@ -6,17 +6,18 @@ import {
   AdminInitiateAuthResponse,
 } from 'aws-sdk/clients/cognitoidentityserviceprovider';
 
+const { USER_POOL_ID, CLIENT_ID } = process.env;
+
 const signInClients = async (phone: string, password: string) => {
   const cognito = new AWS.CognitoIdentityServiceProvider();
-  const { user_pool_id, client_id } = process.env;
 
-  if (!user_pool_id && !client_id) {
+  if (!USER_POOL_ID && !CLIENT_ID) {
     throw Boom.badImplementation('Error with UserPoolId or ClientId');
-  } else if (user_pool_id && client_id) {
+  } else if (USER_POOL_ID && CLIENT_ID) {
     const params: AdminInitiateAuthRequest = {
       AuthFlow: 'ADMIN_NO_SRP_AUTH',
-      UserPoolId: user_pool_id,
-      ClientId: client_id,
+      UserPoolId: USER_POOL_ID,
+      ClientId: CLIENT_ID,
       AuthParameters: {
         USERNAME: phone,
         PASSWORD: password,

@@ -8,6 +8,8 @@ import verifyOTP from './verifyOTP';
 import signUpClients from './signUpClients';
 import signInClients from './signInClients';
 
+const TABLE_NAME = process.env.USERS_TABLE_NAME;
+
 const handler = async (
   event: EventBody<{
     connection: mysql.Connection;
@@ -27,7 +29,7 @@ const handler = async (
     };
   } else {
     const currentUserDb = await dynamodb
-      .get({ TableName: 'UsersPhotoService', Key: { nickname: phone } })
+      .get({ TableName: TABLE_NAME, Key: { nickname: phone } })
       .promise()
       .catch(error => {
         throw Boom.badImplementation(error);

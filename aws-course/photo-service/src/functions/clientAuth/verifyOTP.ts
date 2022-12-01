@@ -1,13 +1,15 @@
 import AWS from 'aws-sdk';
 import Boom from '@hapi/boom';
 
+const TABLE_NAME = process.env.CLIENTS_OTP_TABLE_NAME;
+
 const verifyOTP = async (phone: string, otp: string) => {
   const dynamodb = new AWS.DynamoDB.DocumentClient();
   let verify: boolean = false;
   let message: string = '';
 
   const dataOTP = await dynamodb
-    .get({ TableName: 'ClientsOTP', Key: { phone } })
+    .get({ TableName: TABLE_NAME, Key: { phone } })
     .promise()
     .catch(error => {
       throw Boom.badImplementation(error);

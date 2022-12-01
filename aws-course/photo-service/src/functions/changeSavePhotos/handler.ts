@@ -12,8 +12,10 @@ import updateSelfiesLoaded from '../../repositories/updateSelfiesLoaded';
 import saveAlbumCover from './saveAlbumCover';
 import queryCurrentPhotoId from '../../repositories/queryCurrentPhotoId';
 
+const { STAGE, DATABASE_URL } = process.env;
+
 const handler = async (event: any) => {
-  const connection = await mysql.createConnection(process.env.DATABASE_URL);
+  const connection = await mysql.createConnection(DATABASE_URL);
 
   // console.log('\n*** This is Event after save S3 ***', JSON.stringify(event));
   // console.log('\nimage path: ', event.Records[0].s3.object.key);
@@ -24,7 +26,7 @@ const handler = async (event: any) => {
     console.log('Stoped function saveChangePhotos');
     return;
   }
-  const photoLink = `https://photos-from-photo-service.s3.amazonaws.com/${key}`;
+  const photoLink = `https://photos-from-photo-service-${STAGE}.s3.amazonaws.com/${key}`;
   const arrKeyData = key.split('/');
   const permission = arrKeyData[0];
   const photoName = arrKeyData.slice(-1)[0].replace('.jpeg', '');

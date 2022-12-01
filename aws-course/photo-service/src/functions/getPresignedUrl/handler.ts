@@ -9,6 +9,7 @@ import writeNewPhoto from '../../repositories/writeNewPhoto';
 import writeClientPhoto from '../../repositories/writeClientPhoto';
 
 const BUCKET_NAME = process.env.FILE_UPLOAD_BUCKET_NAME;
+const { STAGE } = process.env;
 
 const handler = async (event: Event) => {
   const s3 = new AWS.S3();
@@ -59,7 +60,7 @@ const handler = async (event: Event) => {
       return;
     }
   });
-  const imageLink = `https://photos-from-photo-service.s3.amazonaws.com/${params.Fields.key}`;
+  const imageLink = `https://photos-from-photo-service-${STAGE}.s3.amazonaws.com/${params.Fields.key}`;
 
   switch (permission) {
     case 'client':

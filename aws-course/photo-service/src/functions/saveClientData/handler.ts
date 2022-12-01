@@ -5,6 +5,8 @@ import { middyfy } from '../../libs/lambda';
 import { Event } from '../../interface/interface';
 import updateClientsData from '../../repositories/updateClientsData';
 
+const TABLE_NAME = process.env.USERS_TABLE_NAME;
+
 const handler = async (event: Event) => {
   const dynamodb = new AWS.DynamoDB.DocumentClient();
 
@@ -12,7 +14,7 @@ const handler = async (event: Event) => {
   const { connection, fullName, email } = event.body;
 
   const currentUserDb = await dynamodb
-    .get({ TableName: 'UsersPhotoService', Key: { nickname: nickname } })
+    .get({ TableName: TABLE_NAME, Key: { nickname: nickname } })
     .promise()
     .catch(error => {
       throw Boom.badImplementation(error);
@@ -22,7 +24,7 @@ const handler = async (event: Event) => {
   currentUserDb.Item.email = email;
 
   await dynamodb
-    .put({ TableName: 'UsersPhotoService', Item: currentUserDb.Item })
+    .put({ TableName: TABLE_NAME, Item: currentUserDb.Item })
     .promise()
     .catch(error => {
       throw Boom.badImplementation(error);

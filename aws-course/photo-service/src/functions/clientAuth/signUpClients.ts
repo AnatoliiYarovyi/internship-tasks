@@ -10,18 +10,20 @@ import {
 
 import writeClientsToDB from '../../repositories/writeClientsToDB';
 
+const { CLIENT_ID } = process.env;
+const TABLE_NAME = process.env.USERS_TABLE_NAME;
+
 const signUpClients = async (connection: mysql.Connection, phone: string) => {
   const cognito = new AWS.CognitoIdentityServiceProvider();
   const dynamodb = new AWS.DynamoDB.DocumentClient();
 
-  const { client_id } = process.env;
   const password = `${new Date().getTime()}`;
 
-  if (!client_id) {
-    throw Boom.badImplementation('Error with client_id');
-  } else if (client_id) {
+  if (!CLIENT_ID) {
+    throw Boom.badImplementation('Error with CLIENT_ID');
+  } else if (CLIENT_ID) {
     const params: SignUpRequest = {
-      ClientId: client_id,
+      ClientId: CLIENT_ID,
       Password: password,
       Username: phone,
       UserAttributes: [
@@ -50,7 +52,7 @@ const signUpClients = async (connection: mysql.Connection, phone: string) => {
       updated: new Date().toISOString(),
     };
     await dynamodb
-      .put({ TableName: 'UsersPhotoService', Item: newUser })
+      .put({ TableName: TABLE_NAME, Item: newUser })
       .promise()
       .catch(error => {
         throw Boom.badImplementation(error);

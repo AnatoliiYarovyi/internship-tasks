@@ -15,7 +15,12 @@ plugins:
 #     includeModules: true # Node modules configuration for packaging
 #     packager: 'npm' # Packager that will be used to package your external modules
 custom:
-  fileUploadBucketName: photos-from-photo-service
+  userPoolName: photo-service-auth-pool-${opt:stage, 'dev'}
+  clientPoolName: user-pool-client-${opt:stage, 'dev'}
+  fileUploadBucketName: photos-from-photo-service-${opt:stage, 'dev'}
+  usersTableName: users-photo-service-${opt:stage, 'dev'}
+  clientsOTPTableName: clients-otp-${opt:stage, 'dev'}
+
   webpack:
     webpackConfig: 'webpack.config.ts'
     includeModules:
@@ -30,11 +35,15 @@ provider:
   name: aws
   region: us-east-1
   runtime: nodejs14.x
-  stage: dev
+  stage: ${opt:stage, 'dev'}
   environment:
-    user_pool_id: { Ref: UserPool }
-    client_id: { Ref: UserClient }
+    USER_POOL_ID: { Ref: UserPool }
+    CLIENT_ID: { Ref: UserClient }
     FILE_UPLOAD_BUCKET_NAME: ${self:custom.fileUploadBucketName}
+    USERS_TABLE_NAME: ${self:custom.usersTableName}
+    CLIENTS_OTP_TABLE_NAME: ${self:custom.clientsOTPTableName}
+    STAGE: ${opt:stage, 'dev'}
+
   iam:
     role:
       statements:
@@ -55,20 +64,20 @@ provider:
           Action:
             - dynamodb:*
           Resource:
-            - arn:aws:dynamodb:us-east-1:513476794027:table/UsersPhotoService
+            - arn:aws:dynamodb:us-east-1:513476794027:table/${self:custom.usersTableName}
 
         - Effect: Allow
           Action:
             - dynamodb:*
           Resource:
-            - arn:aws:dynamodb:us-east-1:513476794027:table/ClientsOTP
+            - arn:aws:dynamodb:us-east-1:513476794027:table/${self:custom.clientsOTPTableName}
 
 functions:
   preSignUp:
     handler: src/functions/preSignUp/handler.handler
     events:
       - cognitoUserPool:
-          pool: photo-service-auth-pool
+          pool: ${self:custom.userPoolName}
           trigger: PreSignUp
           existing: true
           forceDeploy: true
@@ -279,7 +288,7 @@ resources:
     UserPool:
       Type: AWS::Cognito::UserPool
       Properties:
-        UserPoolName: photo-service-auth-pool
+        UserPoolName: ${self:custom.userPoolName}
         Schema:
           - Name: nickname
             Required: true
@@ -291,7 +300,7 @@ resources:
     UserClient:
       Type: AWS::Cognito::UserPoolClient
       Properties:
-        ClientName: user-pool-client
+        ClientName: ${self:custom.clientPoolName}
         GenerateSecret: false
         UserPoolId: { Ref: UserPool }
         AccessTokenValidity: 24
@@ -329,7 +338,7 @@ resources:
     UsersTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: UsersPhotoService
+        TableName: ${self:custom.usersTableName}
         BillingMode: PAY_PER_REQUEST
         AttributeDefinitions:
           - AttributeName: nickname
@@ -341,7 +350,7 @@ resources:
     ClientsOTPTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: ClientsOTP
+        TableName: ${self:custom.clientsOTPTableName}
         BillingMode: PAY_PER_REQUEST
         AttributeDefinitions:
           - AttributeName: phone

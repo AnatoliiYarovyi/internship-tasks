@@ -8,6 +8,9 @@ import { EventBody } from '../../interface/interface';
 import validateSchemas from './validateSchema';
 import writePhotographerToDB from '../../repositories/writePhotographerToDB';
 
+const { CLIENT_ID } = process.env;
+const TABLE_NAME = process.env.USERS_TABLE_NAME;
+
 const handler = async (
   event: EventBody<{
     connection: mysql.Connection;
@@ -24,10 +27,9 @@ const handler = async (
 
   const { connection, nickname, password, fullName, email, phone, permission } =
     event.body;
-  const { client_id } = process.env;
 
   const params = {
-    ClientId: client_id,
+    ClientId: CLIENT_ID,
     Password: password,
     Username: nickname,
     UserAttributes: [
@@ -58,7 +60,7 @@ const handler = async (
     updated: new Date().toISOString(),
   };
   await dynamodb
-    .put({ TableName: 'UsersPhotoService', Item: newUser })
+    .put({ TableName: TABLE_NAME, Item: newUser })
     .promise()
     .catch(error => {
       throw Boom.badImplementation(error);

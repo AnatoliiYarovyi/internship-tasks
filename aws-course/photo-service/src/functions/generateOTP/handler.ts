@@ -7,6 +7,8 @@ import { EventBody } from '../../interface/interface';
 // import validateSchemas from './validateSchema'; // this is temporary for ease of development
 import botSendOTP from '../botSendOTP/botSendOTP';
 
+const TABLE_NAME = process.env.CLIENTS_OTP_TABLE_NAME;
+
 const handler = async (event: EventBody<{ phone: string }>) => {
   const dynamodb = new AWS.DynamoDB.DocumentClient();
 
@@ -23,7 +25,7 @@ const handler = async (event: EventBody<{ phone: string }>) => {
     created: new Date().getTime(),
   };
   await dynamodb
-    .put({ TableName: 'ClientsOTP', Item: newOTP })
+    .put({ TableName: TABLE_NAME, Item: newOTP })
     .promise()
     .catch(error => {
       throw Boom.badImplementation(error);

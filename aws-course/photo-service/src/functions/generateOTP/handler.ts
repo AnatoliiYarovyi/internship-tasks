@@ -11,7 +11,6 @@ const TABLE_NAME = process.env.CLIENTS_OTP_TABLE_NAME;
 
 const handler = async (event: EventBody<{ phone: string }>) => {
   const dynamodb = new AWS.DynamoDB.DocumentClient();
-
   const { phone } = event.body;
   // Generate a new secret login code write to DB and send it to the user
   // const secretLoginCode = Date.now().toString().slice(-4);

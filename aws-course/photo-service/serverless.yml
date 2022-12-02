@@ -4,16 +4,10 @@ frameworkVersion: '3'
 useDotenv: true
 
 plugins:
-  - serverless-webpack
-  - serverless-offline
+  - serverless-plugin-typescript
   - serverless-dotenv-plugin
+  - serverless-offline
 
-# custom:
-#   fileUploadBucketName: photos-from-photo-service
-#   webpack:
-#     webpackConfig: 'webpack.config.ts' # Name of webpack configuration file
-#     includeModules: true # Node modules configuration for packaging
-#     packager: 'npm' # Packager that will be used to package your external modules
 custom:
   userPoolName: photo-service-auth-pool-${opt:stage, 'dev'}
   clientPoolName: user-pool-client-${opt:stage, 'dev'}
@@ -21,24 +15,21 @@ custom:
   usersTableName: users-photo-service-${opt:stage, 'dev'}
   clientsOTPTableName: clients-otp-${opt:stage, 'dev'}
 
-  webpack:
-    webpackConfig: 'webpack.config.ts'
-    includeModules:
-      forceExclude:
-        - aws-sdk
-    packagerOptions:
-      scripts:
-        - rm -rf node_modules/sharp
-        - npm install --arch=x64 --platform=linux sharp
-
 provider:
   name: aws
   region: us-east-1
   runtime: nodejs14.x
   stage: ${opt:stage, 'dev'}
   environment:
+    # DATABASE_URL: ${env.DATABASE_URL}
+    # TOKEN_BOT: ${env.TOKEN_BOT}
+    # CHAT_ID: ${env.CHAT_ID}
+    # SECRET_KEY: ${env.SECRET_KEY}
+    # STRIPE_WEBHOOK_SECRET: ${env.STRIPE_WEBHOOK_SECRET}
+
     USER_POOL_ID: { Ref: UserPool }
     CLIENT_ID: { Ref: UserClient }
+
     FILE_UPLOAD_BUCKET_NAME: ${self:custom.fileUploadBucketName}
     USERS_TABLE_NAME: ${self:custom.usersTableName}
     CLIENTS_OTP_TABLE_NAME: ${self:custom.clientsOTPTableName}

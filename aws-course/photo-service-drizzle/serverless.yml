@@ -1,0 +1,351 @@
+service: photo-service
+frameworkVersion: '3'
+
+useDotenv: true
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-dotenv-plugin
+  - serverless-offline
+
+custom:
+  userPoolName: photo-service-auth-pool-${opt:stage, 'dev'}
+  clientPoolName: user-pool-client-${opt:stage, 'dev'}
+  fileUploadBucketName: photos-from-photo-service-${opt:stage, 'dev'}
+  usersTableName: users-photo-service-${opt:stage, 'dev'}
+  clientsOTPTableName: clients-otp-${opt:stage, 'dev'}
+
+provider:
+  name: aws
+  region: us-east-1
+  runtime: nodejs14.x
+  stage: ${opt:stage, 'dev'}
+  environment:
+    # DATABASE_URL: ${env.DATABASE_URL}
+    # TOKEN_BOT: ${env.TOKEN_BOT}
+    # CHAT_ID: ${env.CHAT_ID}
+    # SECRET_KEY: ${env.SECRET_KEY}
+    # STRIPE_WEBHOOK_SECRET: ${env.STRIPE_WEBHOOK_SECRET}
+
+    USER_POOL_ID: { Ref: UserPool }
+    CLIENT_ID: { Ref: UserClient }
+
+    FILE_UPLOAD_BUCKET_NAME: ${self:custom.fileUploadBucketName}
+    USERS_TABLE_NAME: ${self:custom.usersTableName}
+    CLIENTS_OTP_TABLE_NAME: ${self:custom.clientsOTPTableName}
+    STAGE: ${opt:stage, 'dev'}
+
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - cognito-idp:AdminInitiateAuth
+            - cognito-idp:AdminCreateUser
+            - cognito-idp:AdminSetUserPassword
+          Resource: '*'
+
+        - Effect: Allow
+          Action:
+            - s3:*
+          Resource:
+            - arn:aws:s3:::${self:custom.fileUploadBucketName}/*
+
+        - Effect: Allow
+          Action:
+            - dynamodb:*
+          Resource:
+            - arn:aws:dynamodb:us-east-1:513476794027:table/${self:custom.usersTableName}
+
+        - Effect: Allow
+          Action:
+            - dynamodb:*
+          Resource:
+            - arn:aws:dynamodb:us-east-1:513476794027:table/${self:custom.clientsOTPTableName}
+
+functions:
+  preSignUp:
+    handler: src/functions/preSignUp/handler.handler
+    events:
+      - cognitoUserPool:
+          pool: ${self:custom.userPoolName}
+          trigger: PreSignUp
+          existing: true
+          forceDeploy: true
+
+  signUp:
+    handler: src/functions/signUp/handler.signUp
+    events:
+      - http:
+          cors: true
+          path: /signUp
+          method: post
+
+  signIn:
+    handler: src/functions/signIn/handler.signIn
+    events:
+      - http:
+          cors: true
+          path: /signIn
+          method: post
+
+  getPresignedUrl:
+    handler: src/functions/getPresignedUrl/handler.getPresignedUrl
+    events:
+      - http:
+          cors: true
+          path: /getPresignedUrl
+          method: get
+          authorizer:
+            name: PrivateAuthorizer
+            type: COGNITO_USER_POOLS
+            arn:
+              Fn::GetAtt:
+                - UserPool
+                - Arn
+            claims:
+              - nickname
+
+  changeSavePhotos:
+    handler: src/functions/changeSavePhotos/handler.changeSavePhotos
+    events:
+      - s3:
+          bucket: ${self:custom.fileUploadBucketName}
+          event: s3:ObjectCreated:*
+          existing: true
+          forceDeploy: true
+
+  getAlbumsData:
+    handler: src/functions/getAlbumsData/handler.getAlbumsData
+    events:
+      - http:
+          cors: true
+          path: /getAlbumsData
+          method: get
+          authorizer:
+            name: PrivateAuthorizer
+            type: COGNITO_USER_POOLS
+            arn:
+              Fn::GetAtt:
+                - UserPool
+                - Arn
+            claims:
+              - nickname
+
+  createNewAlbum:
+    handler: src/functions/createNewAlbum/handler.createNewAlbum
+    events:
+      - http:
+          cors: true
+          path: /createNewAlbum
+          method: post
+          authorizer:
+            name: PrivateAuthorizer
+            type: COGNITO_USER_POOLS
+            arn:
+              Fn::GetAtt:
+                - UserPool
+                - Arn
+            claims:
+              - nickname
+
+  getPhotos:
+    handler: src/functions/getPhotos/handler.getPhotos
+    events:
+      - http:
+          cors: true
+          path: /getPhotos
+          method: get
+          authorizer:
+            name: PrivateAuthorizer
+            type: COGNITO_USER_POOLS
+            arn:
+              Fn::GetAtt:
+                - UserPool
+                - Arn
+            claims:
+              - nickname
+
+  getPhotographersData:
+    handler: src/functions/getPhotographersData/handler.getPhotographersData
+    events:
+      - http:
+          cors: true
+          path: /getPhotographersData
+          method: get
+
+  generateOTP:
+    handler: src/functions/generateOTP/handler.generateOTP
+    events:
+      - http:
+          cors: true
+          path: /generateOTP
+          method: post
+
+  resendOTP:
+    handler: src/functions/resendOTP/handler.resendOTP
+    events:
+      - http:
+          cors: true
+          path: /resendOTP
+          method: post
+
+  clientAuth:
+    handler: src/functions/clientAuth/handler.clientAuth
+    events:
+      - http:
+          cors: true
+          path: /clientAuth
+          method: post
+
+  saveClientData:
+    handler: src/functions/saveClientData/handler.saveClientData
+    events:
+      - http:
+          cors: true
+          path: /saveClientData
+          method: post
+          authorizer:
+            name: PrivateAuthorizer
+            type: COGNITO_USER_POOLS
+            arn:
+              Fn::GetAtt:
+                - UserPool
+                - Arn
+            claims:
+              - nickname
+
+  getClientsData:
+    handler: src/functions/getClientsData/handler.getClientsData
+    events:
+      - http:
+          cors: true
+          path: /getClientsData
+          method: get
+          authorizer:
+            name: PrivateAuthorizer
+            type: COGNITO_USER_POOLS
+            arn:
+              Fn::GetAtt:
+                - UserPool
+                - Arn
+            claims:
+              - nickname
+
+  getAlbumsAndPhotos:
+    handler: src/functions/getAlbumsAndPhotos/handler.getAlbumsAndPhotos
+    events:
+      - http:
+          cors: true
+          path: /getAlbumsAndPhotos
+          method: get
+          authorizer:
+            name: PrivateAuthorizer
+            type: COGNITO_USER_POOLS
+            arn:
+              Fn::GetAtt:
+                - UserPool
+                - Arn
+            claims:
+              - nickname
+
+  getPaymentLink:
+    handler: src/functions/getPaymentLink/handler.getPaymentLink
+    events:
+      - http:
+          cors: true
+          path: /getPaymentLink
+          method: get
+          authorizer:
+            name: PrivateAuthorizer
+            type: COGNITO_USER_POOLS
+            arn:
+              Fn::GetAtt:
+                - UserPool
+                - Arn
+            claims:
+              - nickname
+
+  webhook:
+    handler: src/functions/webhook/handler.webhook
+    events:
+      - http:
+          cors: true
+          path: /webhook
+          method: post
+
+resources:
+  Resources:
+    UserPool:
+      Type: AWS::Cognito::UserPool
+      Properties:
+        UserPoolName: ${self:custom.userPoolName}
+        Schema:
+          - Name: nickname
+            Required: true
+            Mutable: true
+        Policies:
+          PasswordPolicy:
+            MinimumLength: 6
+
+    UserClient:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        ClientName: ${self:custom.clientPoolName}
+        GenerateSecret: false
+        UserPoolId: { Ref: UserPool }
+        AccessTokenValidity: 24
+        IdTokenValidity: 24
+        ExplicitAuthFlows:
+          - 'ADMIN_NO_SRP_AUTH'
+
+    GatewayResponseDefault4XX:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: DEFAULT_4XX
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
+
+    ImageS3Bucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.fileUploadBucketName}
+        AccessControl: PublicRead
+        CorsConfiguration:
+          CorsRules:
+            - AllowedHeaders:
+                - '*'
+              AllowedMethods:
+                - GET
+                - POST
+                - PUT
+                - HEAD
+              AllowedOrigins:
+                - '*'
+
+    UsersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.usersTableName}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: nickname
+            AttributeType: S
+        KeySchema:
+          - AttributeName: nickname
+            KeyType: HASH
+
+    ClientsOTPTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.clientsOTPTableName}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: phone
+            AttributeType: S
+        KeySchema:
+          - AttributeName: phone
+            KeyType: HASH

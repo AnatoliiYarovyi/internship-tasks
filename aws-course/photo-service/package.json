@@ -27,6 +27,7 @@
     "aws-sdk": "^2.1116.0",
     "eslint": "^8.12.0",
     "json-schema-to-ts": "^1.6.5",
+    "serverless": "^3.25.1",
     "serverless-dotenv-plugin": "^4.0.2",
     "serverless-offline": "^8.5.0",
     "serverless-plugin-typescript": "^2.1.4",

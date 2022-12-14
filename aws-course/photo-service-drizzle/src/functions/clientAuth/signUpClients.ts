@@ -1,21 +1,22 @@
 import AWS from 'aws-sdk';
 import { v4 } from 'uuid';
 import Boom from '@hapi/boom';
-import mysql from 'mysql2/promise';
+import { PgDatabase } from 'drizzle-orm-pg/db';
 
 import {
   SignUpRequest,
   SignUpResponse,
 } from 'aws-sdk/clients/cognitoidentityserviceprovider';
 
-import writeClientsToDB from '../../repositories/writeClientsToDB';
+import { Client } from '../../repositories/Client';
 
 const { CLIENT_ID } = process.env;
 const TABLE_NAME = process.env.USERS_TABLE_NAME;
 
-const signUpClients = async (connection: mysql.Connection, phone: string) => {
+const signUpClients = async (connection: PgDatabase, phone: string) => {
   const cognito = new AWS.CognitoIdentityServiceProvider();
   const dynamodb = new AWS.DynamoDB.DocumentClient();
+  const client = new Client(connection);
 
   const password = `${new Date().getTime()}`;
 
@@ -59,7 +60,7 @@ const signUpClients = async (connection: mysql.Connection, phone: string) => {
       });
 
     // write data to client table in SQL database
-    await writeClientsToDB(connection, phone);
+    await client.writeClients(phone);
   }
   return password;
 };

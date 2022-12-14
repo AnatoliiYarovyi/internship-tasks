@@ -1,6 +1,6 @@
 import AWS from 'aws-sdk';
 import Boom from '@hapi/boom';
-import mysql from 'mysql2/promise';
+import { PgDatabase } from 'drizzle-orm-pg/db';
 
 import { middyfy } from '../../libs/lambda';
 import { EventBody } from '../../interface/interface';
@@ -12,7 +12,7 @@ const TABLE_NAME = process.env.USERS_TABLE_NAME;
 
 const handler = async (
   event: EventBody<{
-    connection: mysql.Connection;
+    connection: PgDatabase;
     phone: string;
     otp: string;
   }>,

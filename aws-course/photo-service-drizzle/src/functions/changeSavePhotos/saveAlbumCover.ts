@@ -1,20 +1,17 @@
-import mysql from 'mysql2/promise';
-
-import queryAlbumData from '../../repositories/queryAlbumData';
-import updateAlbumData from '../../repositories/updateAlbumData';
+import { Photographer } from '../../repositories/Photographer';
 
 const saveAlbumCover = async (
-  connection: mysql.Connection,
+  photographer: Photographer,
   photoId: number,
   smallPhotoLink: string,
 ) => {
-  const getAlbumData = await queryAlbumData(connection, photoId);
+  const getAlbumData = await photographer.getAlbumsData(photoId);
 
-  const { albumId, albumCoverLink } = getAlbumData[0];
-  if (albumCoverLink) {
+  const { albumId, coverLink } = getAlbumData;
+  if (coverLink) {
     return console.log('album cover was not saved');
   } else {
-    await updateAlbumData(connection, albumId, smallPhotoLink);
+    await photographer.updateAlbumCoverLink(albumId, smallPhotoLink);
   }
   return;
 };

@@ -1,21 +1,28 @@
-import Boom from '@hapi/boom';
-import mysql from 'mysql2/promise';
+import { PgConnector } from 'drizzle-orm-pg';
+import pg from 'pg';
+const { Pool } = pg;
 
 import getBufferImg from './getBufferImg';
 import resizePhotos from './resizePhotos';
 import saveCurrentSelfie from './saveCurrentSelfie';
 import addWatermarkToPhotos from './addWatermarkToPhotos';
-
-import updatePhotoLinks from '../../repositories/updatePhotoLinks';
-import updatePhotosLoaded from '../../repositories/updatePhotosLoaded';
-import updateSelfiesLoaded from '../../repositories/updateSelfiesLoaded';
 import saveAlbumCover from './saveAlbumCover';
-import queryCurrentPhotoId from '../../repositories/queryCurrentPhotoId';
+
+import { Photographer } from '../../repositories/Photographer';
+import { Client } from '../../repositories/Client';
 
 const { STAGE, DATABASE_URL } = process.env;
 
 const handler = async (event: any) => {
-  const connection = await mysql.createConnection(DATABASE_URL);
+  const pool = new Pool({
+    connectionString: DATABASE_URL,
+    ssl: true,
+  });
+  const connector = new PgConnector(pool);
+  const connection = await connector.connect();
+
+  const photographer = new Photographer(connection);
+  const client = new Client(connection);
 
   // console.log('\n*** This is Event after save S3 ***', JSON.stringify(event));
   // console.log('\nimage path: ', event.Records[0].s3.object.key);
@@ -33,15 +40,15 @@ const handler = async (event: any) => {
 
   switch (permission) {
     case 'clients':
-      await updateSelfiesLoaded(connection, photoName);
+      await client.updateSelfiesLoaded(photoName);
       const nickname = arrKeyData[2];
       await saveCurrentSelfie(nickname, photoLink);
       break;
 
     case 'photographers':
-      const photoId = await queryCurrentPhotoId(connection, photoName);
+      const photoId = await photographer.getCurrentPhotoId(photoName);
 
-      await updatePhotosLoaded(connection, photoId);
+      await photographer.updatePhotosLoaded(photoId);
 
       const bufferPhoto = await getBufferImg(photoLink);
 
@@ -54,29 +61,20 @@ const handler = async (event: any) => {
         dataDemoPhoto.Key,
       );
 
-      await updatePhotoLinks(
-        connection,
+      await photographer.updatePhotoLinks(
         photoId,
         dataSmallPhoto.Location,
         dataDemoPhoto.Location,
         dataSmallDemoPhoto.Location,
       );
 
-      await saveAlbumCover(connection, photoId, dataSmallPhoto.Location);
+      await saveAlbumCover(photographer, photoId, dataSmallPhoto.Location);
 
       break;
 
     default:
       console.log('Invalid permission type');
   }
-
-  await connection.end(err => {
-    if (err) {
-      throw Boom.badImplementation(err);
-    } else {
-      console.log('\n*** connect --> END ***');
-    }
-  });
 };
 
 export const changeSavePhotos = handler;

@@ -1,19 +1,20 @@
 import AWS from 'aws-sdk';
 import { v4 } from 'uuid';
 import Boom from '@hapi/boom';
-import mysql from 'mysql2/promise';
+import { PgDatabase } from 'drizzle-orm-pg/db';
 
 import { middyfy } from '../../libs/lambda';
 import { EventBody } from '../../interface/interface';
 import validateSchemas from './validateSchema';
-import writePhotographerToDB from '../../repositories/writePhotographerToDB';
+
+import { Photographer } from '../../repositories/Photographer';
 
 const { CLIENT_ID } = process.env;
 const TABLE_NAME = process.env.USERS_TABLE_NAME;
 
 const handler = async (
   event: EventBody<{
-    connection: mysql.Connection;
+    connection: PgDatabase;
     nickname: string;
     password: string;
     fullName?: string;
@@ -24,9 +25,9 @@ const handler = async (
 ) => {
   const cognito = new AWS.CognitoIdentityServiceProvider();
   const dynamodb = new AWS.DynamoDB.DocumentClient();
-
   const { connection, nickname, password, fullName, email, phone, permission } =
     event.body;
+  const photographer = new Photographer(connection)
 
   const params = {
     ClientId: CLIENT_ID,
@@ -72,7 +73,7 @@ const handler = async (
       break;
 
     case 'photographer':
-      await writePhotographerToDB(connection, nickname, fullName, email, phone);
+      await photographer.writePhotographer(nickname, fullName, email, phone);
       break;
 
     default:

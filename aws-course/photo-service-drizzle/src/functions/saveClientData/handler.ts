@@ -3,15 +3,16 @@ import Boom from '@hapi/boom';
 
 import { middyfy } from '../../libs/lambda';
 import { Event } from '../../interface/interface';
-import updateClientsData from '../../repositories/updateClientsData';
+
+import { Client } from '../../repositories/Client';
 
 const TABLE_NAME = process.env.USERS_TABLE_NAME;
 
 const handler = async (event: Event) => {
   const dynamodb = new AWS.DynamoDB.DocumentClient();
-
   const nickname = event.requestContext.authorizer.claims.nickname;
   const { connection, fullName, email } = event.body;
+  const client = new Client(connection);
 
   const currentUserDb = await dynamodb
     .get({ TableName: TABLE_NAME, Key: { nickname: nickname } })
@@ -31,7 +32,9 @@ const handler = async (event: Event) => {
     });
 
   // write data to client table in SQL database
-  await updateClientsData(connection, nickname, fullName, email);
+  await client.updateClientsData(nickname, fullName, email).catch(error => {
+    throw Boom.badImplementation(error);
+  });
 
   return {
     status: 'success',

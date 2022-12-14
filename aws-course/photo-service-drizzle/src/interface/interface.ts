@@ -1,4 +1,4 @@
-import mysql from 'mysql2/promise';
+import { PgDatabase } from 'drizzle-orm-pg/db';
 
 export interface EventBody<T> {
   body: T;
@@ -7,7 +7,7 @@ export interface EventBody<T> {
 export interface Event {
   headers: any;
   body: {
-    connection: mysql.Connection;
+    connection: PgDatabase;
     albumName: string;
     location: string;
     specifiedTimestamp: string;

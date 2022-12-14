@@ -1,22 +1,23 @@
 import AWS from 'aws-sdk';
 import { v4 } from 'uuid';
-// import Boom from '@hapi/boom';
+import Boom from '@hapi/boom';
 
 import { middyfy } from '../../libs/lambda';
 import { Event } from '../../interface/interface';
-import writeClientsSelfieLink from '../../repositories/writeClientsSelfieLink';
-import writeNewPhoto from '../../repositories/writeNewPhoto';
-import writeClientPhoto from '../../repositories/writeClientPhoto';
+
+import { Client } from '../../repositories/Client';
+import { Photographer } from '../../repositories/Photographer';
 
 const BUCKET_NAME = process.env.FILE_UPLOAD_BUCKET_NAME;
 const { STAGE } = process.env;
 
 const handler = async (event: Event) => {
   const s3 = new AWS.S3();
-
   const nickname = event.requestContext.authorizer.claims.nickname;
   const { permission } = event.queryStringParameters;
   const { connection } = event.body;
+  const client = new Client(connection);
+  const photographer = new Photographer(connection);
 
   const newImageName = v4();
 
@@ -64,23 +65,25 @@ const handler = async (event: Event) => {
 
   switch (permission) {
     case 'client':
-      await writeClientsSelfieLink(
-        connection,
-        nickname,
-        newImageName,
-        imageLink,
-      );
+      await client
+        .writeClientsSelfieLink(nickname, newImageName, imageLink)
+        .catch(error => {
+          throw Boom.badImplementation(error);
+        });
       break;
 
     case 'photographer':
       const { clientId, albumId } = event.queryStringParameters;
-      const rows = await writeNewPhoto(
-        connection,
-        newImageName,
-        imageLink,
-        albumId,
-      );
-      const photoId = rows['insertId'];
+      await photographer
+        .writeNewPhoto(newImageName, imageLink, albumId)
+        .catch(error => {
+          throw Boom.badImplementation(error);
+        });
+      const photoId = await photographer
+        .getCurrentPhotoId(newImageName)
+        .catch(error => {
+          throw Boom.badImplementation(error);
+        });
 
       if (clientId) {
         const arrClientId = clientId.split(', ');
@@ -88,7 +91,11 @@ const handler = async (event: Event) => {
         for (let i = 0; i < arrClientId.length; i += 1) {
           console.log(arrClientId[i]);
           const clientId = +arrClientId[i];
-          await writeClientPhoto(connection, clientId, photoId, albumId);
+          await photographer
+            .writeClientPhotoById(clientId, photoId, albumId)
+            .catch(error => {
+              throw Boom.badImplementation(error);
+            });
         }
       }
       break;

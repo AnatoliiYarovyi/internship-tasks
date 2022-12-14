@@ -7,7 +7,9 @@ import type {
   Context,
 } from 'aws-lambda';
 import { ObjectSchema } from 'joi';
-import mysql from 'mysql2/promise';
+import { PgConnector } from 'drizzle-orm-pg';
+import pg from 'pg';
+const { Pool } = pg;
 
 import { ErrorBoom } from '../interface/interface';
 
@@ -52,24 +54,18 @@ const middlewareConnectionDB = (): middy.MiddlewareObj<
   APIGatewayProxyResult
 > => {
   const before: middy.MiddlewareFn = async (request): Promise<void> => {
-    // *** to connect to AWS RDS ***
-    // const { DB_HOST, DB_USER, DB_USER_PASS, DB_NAME } = process.env;
-
-    // const connection = await mysql.createConnection({
-    //   host: DB_HOST,
-    //   user: DB_USER,
-    //   password: DB_USER_PASS,
-    //   database: DB_NAME,
-    // });
-
-    // *** to connect to PlanetScale ***
-    const connection = await mysql.createConnection(process.env.DATABASE_URL);
+    const pool = new Pool({
+      connectionString: process.env.DATABASE_URL,
+      ssl: true,
+    });
+    const connector = new PgConnector(pool);
+    const db = await connector.connect();
 
     if (request.event.body !== null) {
-      request.event.body.connection = connection;
+      request.event.body.connection = db;
     } else {
       request.event.body = {
-        connection,
+        connection: db,
       };
     }
     console.log('\n*** request in middlewareConnectionDB: ***', request);
@@ -120,8 +116,8 @@ const middlewareEditResponse = (): middy.MiddlewareObj<
     APIGatewayProxyResult,
     ErrorBoom
   > = async (request): Promise<void> => {
-    console.log('*** onError ***: ', request);
-    console.log('*** onError ***: ', request.error);
+    // console.log('*** onError ***: ', request);
+    console.log('\n*** onError ***: \n', request.error);
 
     const body = { error: { message: request.error.message || request.error } };
     const statusCode = request.error.output.statusCode || 500;

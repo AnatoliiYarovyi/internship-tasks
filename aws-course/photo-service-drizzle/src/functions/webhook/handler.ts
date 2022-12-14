@@ -1,8 +1,10 @@
 import Boom from '@hapi/boom';
 import Stripe from 'stripe';
-import mysql from 'mysql2/promise';
+import { PgConnector } from 'drizzle-orm-pg';
+import pg from 'pg';
+const { Pool } = pg;
 
-import updateUnlockedPhoto from '../../repositories/updateUnlockedPhoto';
+import { Client } from '../../repositories/Client';
 
 const { SECRET_KEY, STRIPE_WEBHOOK_SECRET, DATABASE_URL } = process.env;
 
@@ -11,9 +13,7 @@ const handler = async event => {
     // @ts-ignore
     apiVersion: '2022-08-01',
   });
-
   const sig = event.headers['Stripe-Signature'];
-
   let eventWebhook: any;
 
   try {
@@ -27,10 +27,16 @@ const handler = async event => {
   }
 
   if (eventWebhook.type === 'checkout.session.completed') {
-    const connection = await mysql.createConnection(DATABASE_URL);
+    const pool = new Pool({
+      connectionString: DATABASE_URL,
+      ssl: true,
+    });
+    const connector = new PgConnector(pool);
+    const connection = await connector.connect();
+    const client = new Client(connection);
     const { albumId, nickname } = eventWebhook.data.object.metadata;
 
-    await updateUnlockedPhoto(connection, albumId, nickname);
+    await client.updateUnlockedPhoto(albumId, nickname);
   }
   // console.log('\n*** eventWebhook.type ***', eventWebhook.type);
 

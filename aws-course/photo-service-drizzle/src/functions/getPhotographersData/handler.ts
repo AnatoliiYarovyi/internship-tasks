@@ -2,12 +2,14 @@ import Boom from '@hapi/boom';
 
 import { Event } from '../../interface/interface';
 import { middyfy } from '../../libs/lambda';
-import queryPhotographersData from '../../repositories/queryPhotographersData';
+
+import { Photographer } from '../../repositories/Photographer';
 
 const handler = async (event: Event) => {
   const { connection } = event.body;
+  const photographer = new Photographer(connection);
 
-  const dataDB = await queryPhotographersData(connection).catch(error => {
+  const dataDB = await photographer.getAllPhotographers().catch(error => {
     throw Boom.badImplementation(error);
   });
 

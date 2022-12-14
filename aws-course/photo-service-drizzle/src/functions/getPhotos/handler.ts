@@ -4,10 +4,8 @@ import Boom from '@hapi/boom';
 import { middyfy } from '../../libs/lambda';
 import { Event } from '../../interface/interface';
 
-import sortClientPhotos from './sortClientPhotos';
-
-import queryPhotosClientByAlbum from '../../repositories/queryPhotosClientByAlbum';
-import queryPhotosPhotographer from '../../repositories/queryPhotosPhotographer';
+import { Client } from '../../repositories/Client';
+import { Photographer } from '../../repositories/Photographer';
 
 const TABLE_NAME = process.env.USERS_TABLE_NAME;
 
@@ -16,6 +14,8 @@ const handler = async (event: Event) => {
   const nickname = event.requestContext.authorizer.claims.nickname;
   const { albumId } = event.queryStringParameters;
   const { connection } = event.body;
+  const photographer = new Photographer(connection);
+  const client = new Client(connection);
 
   const currentUserDb = await dynamodb
     .get({ TableName: TABLE_NAME, Key: { nickname: nickname } })
@@ -28,17 +28,11 @@ const handler = async (event: Event) => {
   let dataDB = null;
   switch (permission) {
     case 'client':
-      const dataPhotos = await queryPhotosClientByAlbum(
-        connection,
-        nickname,
-        albumId,
-      );
-
-      dataDB = sortClientPhotos(dataPhotos);
+      dataDB = await client.getPhotosByAlbumId(nickname, albumId);
       break;
 
     case 'photographer':
-      dataDB = await queryPhotosPhotographer(connection, nickname, albumId);
+      dataDB = await photographer.getPhotosByAlbumId(nickname, albumId);
       break;
 
     default:

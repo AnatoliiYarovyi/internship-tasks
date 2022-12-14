@@ -3,7 +3,8 @@ import Boom from '@hapi/boom';
 
 import { middyfy } from '../../libs/lambda';
 import { Event } from '../../interface/interface';
-import queryAlbumsPhotographer from '../../repositories/queryAlbumsPhotographer';
+
+import { Photographer } from '../../repositories/Photographer';
 
 const TABLE_NAME = process.env.USERS_TABLE_NAME;
 
@@ -11,6 +12,7 @@ const handler = async (event: Event) => {
   const dynamodb = new AWS.DynamoDB.DocumentClient();
   const nickname = event.requestContext.authorizer.claims.nickname;
   const { connection } = event.body;
+  const photographer = new Photographer(connection);
 
   const currentUserDb = await dynamodb
     .get({ TableName: TABLE_NAME, Key: { nickname: nickname } })
@@ -26,7 +28,7 @@ const handler = async (event: Event) => {
       break;
 
     case 'photographer':
-      dataDB = await queryAlbumsPhotographer(connection, nickname);
+      dataDB = await photographer.getAlbums(nickname);
       // console.log('\n*** allAlbumsName: ****', dataDB);
       break;
 

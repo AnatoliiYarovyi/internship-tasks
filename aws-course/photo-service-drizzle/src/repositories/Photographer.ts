@@ -135,7 +135,7 @@ export class Photographer {
         id: photos.photoId,
         smallPhoto: photos.smallPhotoLink,
         photo: photos.photoLink,
-        name: albums.albumName,
+        albumName: albums.albumName,
       })
       .leftJoin(albums, eq(photos.albumId, albums.albumId))
       .leftJoin(

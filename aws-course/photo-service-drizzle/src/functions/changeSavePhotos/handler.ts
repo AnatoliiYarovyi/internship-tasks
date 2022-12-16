@@ -1,6 +1,6 @@
-import { PgConnector } from 'drizzle-orm-pg';
+import { drizzle } from 'drizzle-orm-pg/node';
 import pg from 'pg';
-const { Pool } = pg;
+const { Client: ClientDb } = pg;
 
 import getBufferImg from './getBufferImg';
 import resizePhotos from './resizePhotos';
@@ -14,12 +14,12 @@ import { Client } from '../../repositories/Client';
 const { STAGE, DATABASE_URL } = process.env;
 
 const handler = async (event: any) => {
-  const pool = new Pool({
+  const clientDb = new ClientDb({
     connectionString: DATABASE_URL,
     ssl: true,
   });
-  const connector = new PgConnector(pool);
-  const connection = await connector.connect();
+  await clientDb.connect();
+  const connection = drizzle(clientDb);
 
   const photographer = new Photographer(connection);
   const client = new Client(connection);

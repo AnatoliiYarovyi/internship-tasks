@@ -1,8 +1,8 @@
 import Boom from '@hapi/boom';
 import Stripe from 'stripe';
-import { PgConnector } from 'drizzle-orm-pg';
+import { drizzle } from 'drizzle-orm-pg/node';
 import pg from 'pg';
-const { Pool } = pg;
+const { Client: ClientDb } = pg;
 
 import { Client } from '../../repositories/Client';
 
@@ -27,12 +27,13 @@ const handler = async event => {
   }
 
   if (eventWebhook.type === 'checkout.session.completed') {
-    const pool = new Pool({
+    const clientDb = new ClientDb({
       connectionString: DATABASE_URL,
       ssl: true,
     });
-    const connector = new PgConnector(pool);
-    const connection = await connector.connect();
+    await clientDb.connect();
+    const connection = drizzle(clientDb);
+
     const client = new Client(connection);
     const { albumId, nickname } = eventWebhook.data.object.metadata;
 

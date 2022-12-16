@@ -18,7 +18,7 @@ custom:
 provider:
   name: aws
   region: us-east-1
-  runtime: nodejs14.x
+  runtime: nodejs18.x
   stage: ${opt:stage, 'dev'}
   environment:
     # DATABASE_URL: ${env.DATABASE_URL}

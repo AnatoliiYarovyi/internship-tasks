@@ -71,18 +71,7 @@ const middlewareConnectionDB = (): middy.MiddlewareObj<
     console.log('\n*** request in middlewareConnectionDB: ***', request);
   };
 
-  const after: middy.MiddlewareFn = async (request): Promise<void> => {
-    const { connection } = request.event.body;
-    await connection.end(err => {
-      if (err) {
-        console.log('\n*** endConnect --> err: ***', err);
-        return err;
-      } else {
-        console.log('\n*** connect --> END ***');
-      }
-    });
-  };
-  return { before, after };
+  return { before };
 };
 
 const middlewareEditResponse = (): middy.MiddlewareObj<

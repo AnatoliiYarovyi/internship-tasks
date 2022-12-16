@@ -7,9 +7,9 @@ import type {
   Context,
 } from 'aws-lambda';
 import { ObjectSchema } from 'joi';
-import { PgConnector } from 'drizzle-orm-pg';
+import { drizzle } from 'drizzle-orm-pg/node';
 import pg from 'pg';
-const { Pool } = pg;
+const { Client } = pg;
 
 import { ErrorBoom } from '../interface/interface';
 
@@ -54,12 +54,12 @@ const middlewareConnectionDB = (): middy.MiddlewareObj<
   APIGatewayProxyResult
 > => {
   const before: middy.MiddlewareFn = async (request): Promise<void> => {
-    const pool = new Pool({
+    const client = new Client({
       connectionString: process.env.DATABASE_URL,
       ssl: true,
     });
-    const connector = new PgConnector(pool);
-    const db = await connector.connect();
+    await client.connect();
+    const db = drizzle(client);
 
     if (request.event.body !== null) {
       request.event.body.connection = db;

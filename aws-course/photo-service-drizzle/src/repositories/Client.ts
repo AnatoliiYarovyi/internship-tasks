@@ -23,7 +23,7 @@ export class Client {
   // -----------------------------------
 
   /* queryCurrentClientId */
-  private async getCurrentClientId(phone: string) {
+  async getCurrentClientId(phone: string) {
     const data = await this.db
       .select(clients)
       .where(eq(clients.phone, phone))

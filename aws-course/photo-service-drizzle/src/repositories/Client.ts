@@ -1,6 +1,7 @@
 import { sql } from 'drizzle-orm';
 import { PgDatabase } from 'drizzle-orm-pg';
 import { and, asc, desc, eq, or } from 'drizzle-orm/expressions';
+import { Albums, Photos } from '../data/schema';
 
 import {
   selfies,
@@ -9,6 +10,7 @@ import {
   photos,
   albums,
   photographers,
+  clients_albums,
 } from '../data/schema';
 
 export class Client {
@@ -46,16 +48,17 @@ export class Client {
         smallPhoto: photos.smallPhotoLink,
         demoPhoto: photos.demoPhotoLink,
         smallDemoPhoto: photos.smallDemoPhotoLink,
-        albumName: albums.albumName,
+        albumId: photos.albumId,
       })
       .leftJoin(clients, eq(clients_photos.clientId, clients.clientId))
       .leftJoin(photos, eq(clients_photos.photoId, photos.photoId))
       .leftJoin(albums, eq(photos.albumId, albums.albumId))
       .where(and(eq(clients.phone, phone), eq(photos.loaded, true)));
 
-    const sortData = this.sortPhotos(data);
+    // const sortData = this.sortPhotos(data);
 
-    return sortData;
+    // return sortData;
+    return data;
   }
 
   /* queryPhotosClientByAlbum */
@@ -70,7 +73,7 @@ export class Client {
         smallPhoto: photos.smallPhotoLink,
         demoPhoto: photos.demoPhotoLink,
         smallDemoPhoto: photos.smallDemoPhotoLink,
-        albumName: albums.albumName,
+        albumId: photos.albumId,
       })
       .leftJoin(clients, eq(clients_photos.clientId, clients.clientId))
       .leftJoin(photos, eq(clients_photos.photoId, photos.photoId))
@@ -88,20 +91,63 @@ export class Client {
     return sortData;
   }
 
+  // /* queryAlbumsClient */
+  // async getAlbumsClient(phone: string) {
+  //   const data = await this.db.execute(
+  //     sql`SELECT a.album_id, a.album_name, a.location, a.specified_timestamp, a.album_cover_link
+  //     FROM clients_photos AS cp
+  //     JOIN clients AS c ON cp.client_id = c.client_id
+  //     JOIN photos AS p ON cp.photo_id = p.photo_id
+  //     JOIN albums AS a ON p.album_id = a.album_id
+  //     WHERE c.phone = ${phone}
+  //     GROUP BY a.album_id;`,
+  //   );
+
+  //   const sortData = this.sortAlbum(data['rows']);
+  //   return sortData;
+  // }
+
+  /* queryAlbumsClient */
+  async getAlbumsClientById(id: number) {
+    const data = await this.db
+      .select(clients_albums)
+      .fields({
+        id: clients_albums.albumId,
+        name: albums.albumName,
+        location: albums.location,
+        timestamp: albums.specifiedTimestamp,
+      })
+      .leftJoin(clients, eq(clients_albums.clientId, clients.clientId))
+      .leftJoin(albums, eq(clients_albums.albumId, albums.albumId))
+      .where(and(eq(clients.clientId, id)));
+    return data;
+  }
+
   /* queryAlbumsClient */
   async getAlbumsClient(phone: string) {
-    const data = await this.db.execute(
-      sql`SELECT a.album_id, a.album_name, a.location, a.specified_timestamp, a.album_cover_link 
-      FROM clients_photos AS cp
-      JOIN clients AS c ON cp.client_id = c.client_id
-      JOIN photos AS p ON cp.photo_id = p.photo_id
-      JOIN albums AS a ON p.album_id = a.album_id
-      WHERE c.phone = ${phone} 
-      GROUP BY a.album_id;`,
-    );
+    const data = await this.db
+      .select(clients_albums)
+      .fields({
+        id: clients_albums.albumId,
+        name: albums.albumName,
+        location: albums.location,
+        timestamp: albums.specifiedTimestamp,
+      })
+      .leftJoin(clients, eq(clients_albums.clientId, clients.clientId))
+      .leftJoin(albums, eq(clients_albums.albumId, albums.albumId))
+      .where(and(eq(clients.phone, phone)));
+    return data;
+  }
 
-    const sortData = this.sortAlbum(data['rows']);
-    return sortData;
+  async getAlbumsAndClients(phone: string) {
+    const albums = await this.getAlbumsClient(phone);
+    const photos = await this.getPhotosClient(phone);
+    console.log(photos);
+
+    const albumsWithCover = await this.addCoverToAlbum(albums, photos);
+    const sortPhotos = this.sortPhotos(photos);
+
+    return { albumsWithCover, sortPhotos };
   }
 
   // -----------------------------------
@@ -154,6 +200,17 @@ export class Client {
     return data;
   }
 
+  async writeClientsAlbums(clientId: number, albumId: number) {
+    const data = await this.db
+      .insert(clients_albums)
+      .values({
+        clientId,
+        albumId,
+      })
+      .catch(error => console.log(error));
+    return data;
+  }
+
   /* writeClientsSelfieLink */
   async writeClientsSelfieLink(
     nickname: string,
@@ -186,7 +243,7 @@ export class Client {
           smallPhoto: string;
           demoPhoto: string;
           smallDemoPhoto: string;
-          albumName: string;
+          albumId: number;
         },
       ) => {
         let photoData = {};
@@ -194,7 +251,7 @@ export class Client {
           photoData = {
             photoId: el.id,
             unlocked: el.unlocked,
-            albumName: el.albumName,
+            albumId: el.albumId,
             photoName: el.name,
             photoLink: el.photo,
             smallPhotoLink: el.smallPhoto,
@@ -203,7 +260,7 @@ export class Client {
           photoData = {
             photoId: el.id,
             unlocked: el.unlocked,
-            albumName: el.albumName,
+            albumId: el.albumId,
             photoName: el.name,
             photoLink: el.demoPhoto,
             smallPhotoLink: el.smallDemoPhoto,
@@ -217,6 +274,23 @@ export class Client {
     );
 
     return sortData;
+  }
+
+  async addCoverToAlbum(albums: any[], photos: any[]) {
+    const albumWithCover = albums.reduce((acc, el) => {
+      const photoIndex = photos.findIndex(photo => photo.albumId === el.id);
+      if (photoIndex !== -1) {
+        el.coverLink = photos[photoIndex].smallPhoto;
+      } else {
+        el.coverLink = null;
+      }
+
+      acc.push(el);
+
+      return acc;
+    }, []);
+
+    return albumWithCover;
   }
 
   private sortAlbum(arrAlbum) {

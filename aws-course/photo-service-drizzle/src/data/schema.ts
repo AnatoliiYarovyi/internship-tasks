@@ -37,9 +37,7 @@ export type Albums = InferModel<typeof albums>;
 export const photos = pgTable('photos', {
   photoId: serial('photo_id').primaryKey(),
   name: varchar('name', { length: 100 }).notNull(),
-  loaded: boolean('loaded')
-    .notNull()
-    .default(false),
+  loaded: boolean('loaded').notNull().default(false),
   photoLink: varchar('photo_link', { length: 200 }).notNull(),
   smallPhotoLink: varchar('small_photo_link', { length: 200 }),
   demoPhotoLink: varchar('demo_photo_link', { length: 200 }),
@@ -54,9 +52,7 @@ export type Photos = InferModel<typeof photos>;
 export const selfies = pgTable('selfies', {
   selfieId: serial('selfie_id').primaryKey(),
   name: varchar('name', { length: 100 }).notNull(),
-  loaded: boolean('loaded')
-    .notNull()
-    .default(false),
+  loaded: boolean('loaded').notNull().default(false),
   selfieLink: varchar('selfie_link', { length: 200 }).notNull(),
   clientId: integer('client_id')
     .notNull()
@@ -84,8 +80,16 @@ export const clients_photos = pgTable('clients_photos', {
   albumId: integer('album_id')
     .notNull()
     .references(() => albums.albumId),
-  unlocked: boolean('unlocked')
-    .notNull()
-    .default(false),
+  unlocked: boolean('unlocked').notNull().default(false),
 });
 export type ClientsPhotos = InferModel<typeof clients_photos>;
+
+export const clients_albums = pgTable('clients_albums', {
+  clientId: serial('client_id')
+    .primaryKey()
+    .references(() => clients.clientId),
+  albumId: serial('album_id')
+    .primaryKey()
+    .references(() => photos.photoId),
+});
+export type ClientsAlbums = InferModel<typeof clients_albums>;

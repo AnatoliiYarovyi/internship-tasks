@@ -6,7 +6,6 @@ import getBufferImg from './getBufferImg';
 import resizePhotos from './resizePhotos';
 import saveCurrentSelfie from './saveCurrentSelfie';
 import addWatermarkToPhotos from './addWatermarkToPhotos';
-import saveAlbumCover from './saveAlbumCover';
 
 import { Photographer } from '../../repositories/Photographer';
 import { Client } from '../../repositories/Client';
@@ -67,8 +66,6 @@ const handler = async (event: any) => {
         dataDemoPhoto.Location,
         dataSmallDemoPhoto.Location,
       );
-
-      await saveAlbumCover(photographer, photoId, dataSmallPhoto.Location);
 
       break;
 

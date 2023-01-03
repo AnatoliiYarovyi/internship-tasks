@@ -34,6 +34,12 @@ export interface Event {
     nickname: string;
   };
 }
+export interface Album {
+  id: number;
+  name: string;
+  location: string;
+  timestamp: number;
+}
 
 export interface ErrorBoom {
   name: string;

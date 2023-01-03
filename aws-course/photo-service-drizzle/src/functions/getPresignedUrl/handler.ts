@@ -3,7 +3,7 @@ import { v4 } from 'uuid';
 import Boom from '@hapi/boom';
 
 import { middyfy } from '../../libs/lambda';
-import { Event } from '../../interface/interface';
+import { Album, Event } from '../../interface/interface';
 
 import { Client } from '../../repositories/Client';
 import { Photographer } from '../../repositories/Photographer';
@@ -89,13 +89,22 @@ const handler = async (event: Event) => {
         const arrClientId = clientId.split(', ');
 
         for (let i = 0; i < arrClientId.length; i += 1) {
-          console.log(arrClientId[i]);
           const clientId = +arrClientId[i];
+
+          /* write data to table client_photo */
           await photographer
             .writeClientPhotoById(clientId, photoId, albumId)
             .catch(error => {
               throw Boom.badImplementation(error);
             });
+
+          /* write data to table client_album */
+          const allAlbums: Album[] = await client.getAlbumsClientById(clientId);
+          allAlbums.map(async el => {
+            if (el.id !== albumId) {
+              await client.writeClientsAlbums(clientId, albumId);
+            }
+          });
         }
       }
       break;

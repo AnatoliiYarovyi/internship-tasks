@@ -8,12 +8,14 @@ const handler = async (event: Event) => {
   const { connection } = event.body;
   const client = new Client(connection);
 
-  const albums = await client.getAlbumsClient(nickname);
-  const photos = await client.getPhotosClient(nickname);
+  const data = await client.getAlbumsAndClients(nickname);
 
   return {
     status: 'success',
-    data: { albums, photos },
+    data: {
+      albums: data.albumsWithCover,
+      photos: data.sortPhotos,
+    },
   };
 };
 

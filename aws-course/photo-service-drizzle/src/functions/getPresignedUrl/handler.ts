@@ -5,8 +5,10 @@ import Boom from '@hapi/boom';
 import { middyfy } from '../../libs/lambda';
 import { Album, Event } from '../../interface/interface';
 
-import { Client } from '../../repositories/Client';
-import { Photographer } from '../../repositories/Photographer';
+import { Selfies } from '../../data/repositories/client/Selfies';
+import { Photos } from '../../data/repositories/photographer/Photos';
+import { Clients_Photos } from '../../data/repositories/client/Clients_Photos';
+import { Clients_Albums } from '../../data/repositories/client/Clients_Albums';
 
 const BUCKET_NAME = process.env.FILE_UPLOAD_BUCKET_NAME;
 const { STAGE } = process.env;
@@ -16,8 +18,11 @@ const handler = async (event: Event) => {
   const nickname = event.requestContext.authorizer.claims.nickname;
   const { permission } = event.queryStringParameters;
   const { connection } = event.body;
-  const client = new Client(connection);
-  const photographer = new Photographer(connection);
+
+  const selfies = new Selfies(connection);
+  const photos = new Photos(connection);
+  const clients_photos = new Clients_Photos(connection);
+  const clients_albums = new Clients_Albums(connection);
 
   const newImageName = v4();
 
@@ -65,7 +70,7 @@ const handler = async (event: Event) => {
 
   switch (permission) {
     case 'client':
-      await client
+      await selfies
         .writeClientsSelfieLink(nickname, newImageName, imageLink)
         .catch(error => {
           throw Boom.badImplementation(error);
@@ -74,12 +79,12 @@ const handler = async (event: Event) => {
 
     case 'photographer':
       const { clientId, albumId } = event.queryStringParameters;
-      await photographer
+      await photos
         .writeNewPhoto(newImageName, imageLink, albumId)
         .catch(error => {
           throw Boom.badImplementation(error);
         });
-      const photoId = await photographer
+      const photoId = await photos
         .getCurrentPhotoId(newImageName)
         .catch(error => {
           throw Boom.badImplementation(error);
@@ -92,17 +97,19 @@ const handler = async (event: Event) => {
           const clientId = +arrClientId[i];
 
           /* write data to table client_photo */
-          await photographer
+          await clients_photos
             .writeClientPhotoById(clientId, photoId, albumId)
             .catch(error => {
               throw Boom.badImplementation(error);
             });
 
           /* write data to table client_album */
-          const allAlbums: Album[] = await client.getAlbumsClientById(clientId);
+          const allAlbums: Album[] = await clients_albums.getAlbumsClientById(
+            clientId,
+          );
           allAlbums.map(async el => {
             if (el.id !== albumId) {
-              await client.writeClientsAlbums(clientId, albumId);
+              await clients_albums.writeClientsAlbums(clientId, albumId);
             }
           });
         }

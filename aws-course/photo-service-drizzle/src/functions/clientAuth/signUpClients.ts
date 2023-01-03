@@ -8,7 +8,7 @@ import {
   SignUpResponse,
 } from 'aws-sdk/clients/cognitoidentityserviceprovider';
 
-import { Client } from '../../repositories/Client';
+import { Clients } from '../../data/repositories/client/Clients';
 
 const { CLIENT_ID } = process.env;
 const TABLE_NAME = process.env.USERS_TABLE_NAME;
@@ -16,7 +16,7 @@ const TABLE_NAME = process.env.USERS_TABLE_NAME;
 const signUpClients = async (connection: PgDatabase, phone: string) => {
   const cognito = new AWS.CognitoIdentityServiceProvider();
   const dynamodb = new AWS.DynamoDB.DocumentClient();
-  const client = new Client(connection);
+  const client = new Clients(connection);
 
   const password = `${new Date().getTime()}`;
 

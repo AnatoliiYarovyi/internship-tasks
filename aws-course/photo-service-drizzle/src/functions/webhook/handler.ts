@@ -4,7 +4,7 @@ import { drizzle } from 'drizzle-orm-pg/node';
 import pg from 'pg';
 const { Client: ClientDb } = pg;
 
-import { Client } from '../../repositories/Client';
+import { Clients_Photos } from '../../data/repositories/client/Clients_Photos';
 
 const { SECRET_KEY, STRIPE_WEBHOOK_SECRET, DATABASE_URL } = process.env;
 
@@ -34,10 +34,10 @@ const handler = async event => {
     await clientDb.connect();
     const connection = drizzle(clientDb);
 
-    const client = new Client(connection);
+    const client_photos = new Clients_Photos(connection);
     const { albumId, nickname } = eventWebhook.data.object.metadata;
 
-    await client.updateUnlockedPhoto(albumId, nickname);
+    await client_photos.updateUnlockedPhoto(albumId, nickname);
   }
   // console.log('\n*** eventWebhook.type ***', eventWebhook.type);
 

@@ -7,7 +7,7 @@ import { middyfy } from '../../libs/lambda';
 import { EventBody } from '../../interface/interface';
 import validateSchemas from './validateSchema';
 
-import { Photographer } from '../../repositories/Photographer';
+import { Photographers } from '../../data/repositories/photographer/Photographers';
 
 const { CLIENT_ID } = process.env;
 const TABLE_NAME = process.env.USERS_TABLE_NAME;
@@ -27,7 +27,7 @@ const handler = async (
   const dynamodb = new AWS.DynamoDB.DocumentClient();
   const { connection, nickname, password, fullName, email, phone, permission } =
     event.body;
-  const photographer = new Photographer(connection)
+  const photographer = new Photographers(connection);
 
   const params = {
     ClientId: CLIENT_ID,

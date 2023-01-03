@@ -7,8 +7,8 @@ import resizePhotos from './resizePhotos';
 import saveCurrentSelfie from './saveCurrentSelfie';
 import addWatermarkToPhotos from './addWatermarkToPhotos';
 
-import { Photographer } from '../../repositories/Photographer';
-import { Client } from '../../repositories/Client';
+import { Photos } from '../../data/repositories/photographer/Photos';
+import { Selfies } from '../../data/repositories/client/Selfies';
 
 const { STAGE, DATABASE_URL } = process.env;
 
@@ -19,9 +19,6 @@ const handler = async (event: any) => {
   });
   await clientDb.connect();
   const connection = drizzle(clientDb);
-
-  const photographer = new Photographer(connection);
-  const client = new Client(connection);
 
   // console.log('\n*** This is Event after save S3 ***', JSON.stringify(event));
   // console.log('\nimage path: ', event.Records[0].s3.object.key);
@@ -39,20 +36,20 @@ const handler = async (event: any) => {
 
   switch (permission) {
     case 'clients':
-      await client.updateSelfiesLoaded(photoName);
+      const selfies = new Selfies(connection);
+      await selfies.updateSelfiesLoaded(photoName);
       const nickname = arrKeyData[2];
       await saveCurrentSelfie(nickname, photoLink);
       break;
 
     case 'photographers':
-      const photoId = await photographer.getCurrentPhotoId(photoName);
-
-      await photographer.updatePhotosLoaded(photoId);
+      const photos = new Photos(connection);
+      const photoId = await photos.getCurrentPhotoId(photoName);
+      await photos.updatePhotosLoaded(photoId);
 
       const bufferPhoto = await getBufferImg(photoLink);
 
       const dataSmallPhoto = await resizePhotos(bufferPhoto, key);
-
       const dataDemoPhoto = await addWatermarkToPhotos(bufferPhoto, key);
       const bufferDemoPhoto = await getBufferImg(dataDemoPhoto.Location);
       const dataSmallDemoPhoto = await resizePhotos(
@@ -60,7 +57,7 @@ const handler = async (event: any) => {
         dataDemoPhoto.Key,
       );
 
-      await photographer.updatePhotoLinks(
+      await photos.updatePhotoLinks(
         photoId,
         dataSmallPhoto.Location,
         dataDemoPhoto.Location,

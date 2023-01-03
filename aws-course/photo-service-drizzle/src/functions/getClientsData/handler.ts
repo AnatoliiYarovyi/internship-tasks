@@ -2,9 +2,9 @@ import AWS from 'aws-sdk';
 import Boom from '@hapi/boom';
 
 import { middyfy } from '../../libs/lambda';
-
 import { Event } from '../../interface/interface';
-import { Client } from '../../repositories/Client';
+
+import { Clients } from '../../data/repositories/client/Clients';
 
 const TABLE_NAME = process.env.USERS_TABLE_NAME;
 
@@ -12,7 +12,7 @@ const handler = async (event: Event) => {
   const dynamodb = new AWS.DynamoDB.DocumentClient();
   const nickname = event.requestContext.authorizer.claims.nickname;
   const { connection } = event.body;
-  const client = new Client(connection);
+  const client = new Clients(connection);
 
   const currentUserDb = await dynamodb
     .get({ TableName: TABLE_NAME, Key: { nickname: nickname } })

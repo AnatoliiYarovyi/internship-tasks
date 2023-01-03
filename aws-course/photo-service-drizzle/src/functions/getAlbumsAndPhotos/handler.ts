@@ -1,14 +1,14 @@
 import { middyfy } from '../../libs/lambda';
 import { Event } from '../../interface/interface';
 
-import { Client } from '../../repositories/Client';
+import { Clients_Albums } from '../../data/repositories/client/Clients_Albums';
 
 const handler = async (event: Event) => {
   const nickname = event.requestContext.authorizer.claims.nickname;
   const { connection } = event.body;
-  const client = new Client(connection);
+  const clients_albums = new Clients_Albums(connection);
 
-  const data = await client.getAlbumsAndClients(nickname);
+  const data = await clients_albums.getAlbumsAndPhotos(nickname);
 
   return {
     status: 'success',

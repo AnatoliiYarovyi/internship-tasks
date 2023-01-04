@@ -38,10 +38,10 @@ export class Clients_Albums {
     const data = await this.db
       .select(clients_albums)
       .fields({
-        id: clients_albums.albumId,
-        name: albums.albumName,
+        albumId: clients_albums.albumId,
+        albumName: albums.albumName,
         location: albums.location,
-        timestamp: albums.specifiedTimestamp,
+        specifiedTimestamp: albums.specifiedTimestamp,
       })
       .leftJoin(clients, eq(clients_albums.clientId, clients.clientId))
       .leftJoin(albums, eq(clients_albums.albumId, albums.albumId))
@@ -132,9 +132,9 @@ export class Clients_Albums {
     const albumWithCover = albums.reduce((acc, el) => {
       const photoIndex = photos.findIndex(photo => photo.albumId === el.id);
       if (photoIndex !== -1) {
-        el.coverLink = photos[photoIndex].smallPhoto;
+        el.albumCoverLink = photos[photoIndex].smallPhoto;
       } else {
-        el.coverLink = null;
+        el.albumCoverLink = null;
       }
 
       acc.push(el);

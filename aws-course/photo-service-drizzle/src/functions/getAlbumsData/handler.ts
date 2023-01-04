@@ -29,7 +29,6 @@ const handler = async (event: Event) => {
 
     case 'photographer':
       dataDB = await albums.getAlbums(nickname);
-      // console.log('\n*** allAlbumsName: ****', dataDB);
       break;
 
     default:

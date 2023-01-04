@@ -31,9 +31,9 @@ export class Photos {
     const data = await this.db
       .select(photos)
       .fields({
-        id: photos.photoId,
-        smallPhoto: photos.smallPhotoLink,
-        photo: photos.photoLink,
+        photoId: photos.photoId,
+        smallPhotoLink: photos.smallPhotoLink,
+        photoLink: photos.photoLink,
         albumName: albums.albumName,
       })
       .leftJoin(albums, eq(photos.albumId, albums.albumId))

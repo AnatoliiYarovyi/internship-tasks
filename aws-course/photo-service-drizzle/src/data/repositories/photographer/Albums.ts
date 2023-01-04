@@ -52,10 +52,10 @@ export class Albums {
       .where(eq(photographers.nickname, nickname))
       .fields({
         albumId: albums.albumId,
-        name: albums.albumName,
+        albumName: albums.albumName,
         location: albums.location,
-        timestamp: albums.specifiedTimestamp,
-        coverLink: albums.albumCoverLink,
+        specifiedTimestamp: albums.specifiedTimestamp,
+        albumCoverLink: albums.albumCoverLink,
       });
     return data;
   }

@@ -55,7 +55,6 @@ export class Albums {
         albumName: albums.albumName,
         location: albums.location,
         specifiedTimestamp: albums.specifiedTimestamp,
-        albumCoverLink: albums.albumCoverLink,
       });
     return data;
   }

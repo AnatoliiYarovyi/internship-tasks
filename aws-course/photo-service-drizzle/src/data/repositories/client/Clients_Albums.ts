@@ -130,7 +130,9 @@ export class Clients_Albums {
 
   private addCoverToAlbum(albums: any[], photos: any[]) {
     const albumWithCover = albums.reduce((acc, el) => {
-      const photoIndex = photos.findIndex(photo => photo.albumId === el.id);
+      const photoIndex = photos.findIndex(
+        photo => photo.albumId === el.albumId,
+      );
       if (photoIndex !== -1) {
         el.albumCoverLink = photos[photoIndex].smallPhoto;
       } else {

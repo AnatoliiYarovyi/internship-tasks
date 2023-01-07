@@ -104,6 +104,9 @@ dist
 # TernJS port file
 .tern-port
 
+# SQLite DB
+*.db
+
 # OS generated files #
 ######################
 .DS_Store

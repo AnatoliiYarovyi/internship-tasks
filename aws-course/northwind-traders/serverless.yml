@@ -1,0 +1,43 @@
+service: northwind-traders
+
+frameworkVersion: '3'
+
+useDotenv: true
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-dotenv-plugin
+  - serverless-offline
+
+package:
+  individually: false
+  exclude:
+    - node_modules/**
+
+custom:
+  stage: ${opt:stage, "dev"}
+  region: ${env:AWS_REGION}
+  deploymentBucketName: ${self:custom.stage}-deployment-northwind-traders
+  fileUploadBucketName: ${self:custom.stage}-upload-northwind-traders
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  stage: ${self:custom.stage}
+  region: ${self:custom.region}
+  environment:
+    FILE_UPLOAD_BUCKET_NAME: ${self:custom.fileUploadBucketName}
+  deploymentBucket:
+    name: ${self:custom.deploymentBucketName}
+
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - s3:*
+          Resource:
+            - arn:aws:s3:::${self:custom.fileUploadBucketName}/*
+
+functions: ${file(serverless/functions.yml)}
+resources: ${file(serverless/resources.yml)}

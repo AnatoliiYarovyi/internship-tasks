@@ -1,0 +1,32 @@
+{
+  "name": "northwind-traders",
+  "version": "1.0.0",
+  "description": "",
+  "main": ".eslintrc.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.109",
+    "@types/node": "^18.11.18",
+    "@types/uuid": "^9.0.0",
+    "aws-sdk": "^2.1288.0",
+    "eslint": "^8.31.0",
+    "serverless-dotenv-plugin": "^4.0.2",
+    "serverless-plugin-typescript": "^2.1.4"
+  },
+  "dependencies": {
+    "@hapi/boom": "^10.0.0",
+    "@middy/http-json-body-parser": "^4.0.9",
+    "aws-lambda": "^1.0.7",
+    "better-sqlite3": "^8.0.1",
+    "dotenv": "^16.0.3",
+    "drizzle-orm": "^0.14.2",
+    "drizzle-orm-sqlite": "^0.14.4",
+    "middy": "^0.36.0",
+    "uuid": "^9.0.0"
+  }
+}

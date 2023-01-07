@@ -1,0 +1,22 @@
+Resources:
+  DeploymentBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: ${self:custom.deploymentBucketName}
+
+  UploadBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: ${self:custom.fileUploadBucketName}
+      AccessControl: PublicRead
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders:
+              - '*'
+            AllowedMethods:
+              - GET
+              - POST
+              - PUT
+              - HEAD
+            AllowedOrigins:
+              - '*'

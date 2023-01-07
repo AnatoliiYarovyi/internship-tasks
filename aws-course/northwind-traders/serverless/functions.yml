@@ -1,0 +1,7 @@
+getSuppliers:
+  handler: src/lambdas/getSuppliers/index.handler
+  events:
+    - http:
+        path: /getSuppliers
+        method: get
+        cors: true

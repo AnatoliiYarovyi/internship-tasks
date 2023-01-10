@@ -5,18 +5,16 @@
   "main": ".eslintrc.js",
   "scripts": {
     "start": "serverless offline start",
-    "dev:deploy": "serverless deploy --verbose --stage dev",
-    "dev:undeploy": "serverless remove --stage dev",
-    "dev:function": "npm run sls deploy -- function -f --stage dev",
-    "sit": "npm run sls deploy -- --verbose --stage sit",
-    "sit:undeploy": "npm run sls remove --stage sit",
-    "sit:function": "npm run sls deploy -- function -f --stage sit",
+    "devDeploy": "serverless deploy --stage dev",
+    "devUndeploy": "serverless remove --stage dev",
+    "devFunction": "npm run sls deploy -- function -f --stage dev",
     "lint": "eslint --ext .ts ./src --fix"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@middy/core": "^4.0.10",
     "@types/aws-lambda": "^8.10.109",
     "@types/content-type": "^1.1.5",
     "@types/node": "^18.11.18",

@@ -1,9 +1,4 @@
 Resources:
-  DeploymentBucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName: ${self:custom.deploymentBucketName}
-
   UploadBucket:
     Type: AWS::S3::Bucket
     Properties:

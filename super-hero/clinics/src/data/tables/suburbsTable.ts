@@ -1,0 +1,32 @@
+import { InferModel, integer, sqliteTable, text } from 'drizzle-orm-sqlite';
+
+export const suburbs = sqliteTable('suburbs', {
+  id: integer('id').primaryKey().notNull(),
+  suburbSlug: text('suburb-slug').notNull(),
+  suburbName: text('suburb_name').notNull(),
+  city: text('City').notNull(),
+  state: text('State').notNull(),
+  postcode: integer('Postcode').notNull(),
+  metaTitle: text('meta_title').notNull(),
+  metaDescription: text('meta_description').notNull(),
+  h1: text('H1').notNull(),
+  h2: text('H2').notNull(),
+  aboutBookphysio: text('about_bookphysio').notNull(),
+  nearby1Link: text('nearby1_link').notNull(),
+  nearby1Txt: text('nearby1_txt').notNull(),
+  nearby1State: text('nearby1_state').notNull(),
+  nearby1Postcode: integer('nearby1_postcode').notNull(),
+  nearby2Link: text('nearby2_link').notNull(),
+  nearby2Txt: text('nearby2_txt').notNull(),
+  nearby2State: text('nearby2_state').notNull(),
+  nearby2Postcode: integer('nearby2_postcode').notNull(),
+  nearby3Link: text('nearby3_link').notNull(),
+  nearby3Txt: text('nearby3_txt').notNull(),
+  nearby3State: text('nearby3_state').notNull(),
+  nearby3Postcode: integer('nearby3_postcode').notNull(),
+  nearby4Link: text('nearby4_link').notNull(),
+  nearby4Txt: text('nearby4_txt').notNull(),
+  nearby4State: text('nearby4_state').notNull(),
+  nearby4Postcode: integer('nearby4_postcode').notNull(),
+});
+export type Suburbs = InferModel<typeof suburbs>;

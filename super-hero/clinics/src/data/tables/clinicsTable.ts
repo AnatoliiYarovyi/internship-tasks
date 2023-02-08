@@ -1,0 +1,31 @@
+import { InferModel, sqliteTable, text } from 'drizzle-orm-sqlite';
+
+export const clinics = sqliteTable('clinics', {
+  longNameVersion: text('Long Name Version').notNull(),
+  typeformRegistrationLink: text('Typeform registration link').notNull(),
+  pms: text('PMS').notNull(),
+  metaTitle: text('Meta-title').notNull(),
+  metaDescription: text('Meta-description').notNull(),
+  slug: text('slug').notNull(),
+  website: text('Website').notNull(),
+  clinicName: text('Clinic Name').notNull(),
+  displayOnWeb: text('Display_on_web').notNull(),
+  linkToClinicSuburbPage: text('link to clinic suburb page').notNull(),
+  fullAddress: text('Full Address').notNull(),
+  city: text('City').notNull(),
+  suburb: text('Suburb').notNull(),
+  state: text('State').notNull(),
+  postcode: text('Postcode').notNull(),
+  email: text('Email').notNull(),
+  phone: text('Phone').notNull(),
+  nearby1Txt: text('nearby1_txt').notNull(),
+  nearby1Link: text('nearby1_link').notNull(),
+  nearby2Txt: text('nearby2_txt').notNull(),
+  nearby2Link: text('nearby2_link').notNull(),
+  nearby3Txt: text('nearby3_txt').notNull(),
+  nearby3Link: text('nearby3_link').notNull(),
+  nearby4Txt: text('nearby4_txt').notNull(),
+  nearby4Link: text('nearby4_link').notNull(),
+  aboutClinic: text('About Clinic').notNull(),
+});
+export type Clinics = InferModel<typeof clinics>;

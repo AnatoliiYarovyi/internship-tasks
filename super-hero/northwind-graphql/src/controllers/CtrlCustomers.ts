@@ -1,14 +1,16 @@
-import { Request, Response } from 'express';
-
 import { Customers } from '../data/repositories/Customers';
 import { metrics } from './metrics';
 import { TypedDataResponse, RowCount } from '../interfaces/Ctrl';
-import { AllCustomers, CustomersById } from '../interfaces/CtrlCustomers';
+import {
+  AllCustomers,
+  CustomersById,
+  SearchCustomers,
+} from '../interfaces/CtrlCustomers';
 
 const customers = new Customers();
 
 export class CtrlCustomers {
-  async getRowCount(req: Request, res: Response) {
+  async getRowCount() {
     const triggerDate = metrics.getTriggerDate();
     const data = await customers.getRowCount();
     const duration = metrics.getTimeInterval(triggerDate);
@@ -21,17 +23,15 @@ export class CtrlCustomers {
       data: data.data,
     };
 
-    res.status(200).json({
+    return {
       status: 'success',
       data: typedDataResponse,
-    });
+    };
   }
 
-  async getAllCustomers(req: Request, res: Response) {
-    const { limit, page } = req.query;
-
+  async getAllCustomers(limit: number, page: number) {
     const triggerDate = metrics.getTriggerDate();
-    const data = await customers.getAllCustomers(+limit, +page);
+    const data = await customers.getAllCustomers(limit, page);
     const duration = metrics.getTimeInterval(triggerDate);
 
     const typedDataResponse: TypedDataResponse<AllCustomers> = {
@@ -42,15 +42,13 @@ export class CtrlCustomers {
       data: data.data,
     };
 
-    res.status(200).json({
+    return {
       status: 'success',
       data: typedDataResponse,
-    });
+    };
   }
 
-  async getCustomerById(req: Request, res: Response) {
-    const { id } = req.params;
-
+  async getCustomerById(id: string) {
     const triggerDate = metrics.getTriggerDate();
     const data = await customers.getCustomersById(id);
     const duration = metrics.getTimeInterval(triggerDate);
@@ -63,28 +61,28 @@ export class CtrlCustomers {
       data: data.data,
     };
 
-    res.status(200).json({
+    return {
       status: 'success',
       data: typedDataResponse,
-    });
+    };
   }
 
-  async getSearchCustomers(req: Request, res: Response) {
-    const { value } = req.query;
-
+  async getSearchCustomers(value: string) {
     const triggerDate = metrics.getTriggerDate();
-    const data = await customers.getSearchCustomers(`${value}`);
+    const data = await customers.getSearchCustomers(value);
     const duration = metrics.getTimeInterval(triggerDate);
 
-    res.status(200).json({
+    const typedDataResponse: TypedDataResponse<SearchCustomers> = {
+      duration,
+      ts: metrics.getTimeISO(),
+      servedBy: 'northwind.db',
+      sqlString: data.sqlString,
+      data: data.data,
+    };
+
+    return {
       status: 'success',
-      data: {
-        duration,
-        ts: metrics.getTimeISO(),
-        servedBy: 'northwind.db',
-        sqlString: data.sqlString,
-        data: data.data,
-      },
-    });
+      data: typedDataResponse,
+    };
   }
 }

@@ -1,5 +1,3 @@
-import { Request, Response } from 'express';
-
 import { Products } from '../data/repositories/Products';
 import { metrics } from './metrics';
 import { RowCount, TypedDataResponse } from '../interfaces/Ctrl';
@@ -12,7 +10,7 @@ import {
 const products = new Products();
 
 export class CtrlProducts {
-  async getRowCount(req: Request, res: Response) {
+  async getRowCount() {
     const triggerDate = metrics.getTriggerDate();
     const data = await products.getRowCount();
     const duration = metrics.getTimeInterval(triggerDate);
@@ -25,17 +23,15 @@ export class CtrlProducts {
       data: data.data,
     };
 
-    res.status(200).json({
+    return {
       status: 'success',
       data: typedDataResponse,
-    });
+    };
   }
 
-  async getAllProducts(req: Request, res: Response) {
-    const { limit, page } = req.query;
-
+  async getAllProducts(limit: number, page: number) {
     const triggerDate = metrics.getTriggerDate();
-    const data = await products.getAllProducts(+limit, +page);
+    const data = await products.getAllProducts(limit, page);
     const duration = metrics.getTimeInterval(triggerDate);
 
     const typedDataResponse: TypedDataResponse<AllProducts> = {
@@ -46,17 +42,15 @@ export class CtrlProducts {
       data: data.data,
     };
 
-    res.status(200).json({
+    return {
       status: 'success',
       data: typedDataResponse,
-    });
+    };
   }
 
-  async getProductsById(req: Request, res: Response) {
-    const { id } = req.params;
-
+  async getProductsById(id: number) {
     const triggerDate = metrics.getTriggerDate();
-    const data = await products.getProductById(+id);
+    const data = await products.getProductById(id);
     const duration = metrics.getTimeInterval(triggerDate);
 
     const typedDataResponse: TypedDataResponse<ProductById> = {
@@ -67,17 +61,15 @@ export class CtrlProducts {
       data: data.data,
     };
 
-    res.status(200).json({
+    return {
       status: 'success',
       data: typedDataResponse,
-    });
+    };
   }
 
-  async getSearchProducts(req: Request, res: Response) {
-    const { value } = req.query;
-
+  async getSearchProducts(value: string) {
     const triggerDate = metrics.getTriggerDate();
-    const data = await products.getSearchProducts(`${value}`);
+    const data = await products.getSearchProducts(value);
     const duration = metrics.getTimeInterval(triggerDate);
 
     const typedDataResponse: TypedDataResponse<SearchProducts> = {
@@ -88,9 +80,9 @@ export class CtrlProducts {
       data: data.data,
     };
 
-    res.status(200).json({
+    return {
       status: 'success',
       data: typedDataResponse,
-    });
+    };
   }
 }

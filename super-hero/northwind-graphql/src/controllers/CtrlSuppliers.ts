@@ -1,5 +1,3 @@
-import { Request, Response } from 'express';
-
 import { Suppliers } from '../data/repositories/Suppliers';
 import { metrics } from './metrics';
 import { RowCount, TypedDataResponse } from '../interfaces/Ctrl';
@@ -8,7 +6,7 @@ import { AllSuppliers, SupplierById } from '../interfaces/CtrlSuppliers';
 const suppliers = new Suppliers();
 
 export class CtrlSuppliers {
-  async getRowCount(req: Request, res: Response) {
+  async getRowCount() {
     const triggerDate = metrics.getTriggerDate();
     const data = await suppliers.getRowCount();
     const duration = metrics.getTimeInterval(triggerDate);
@@ -21,15 +19,13 @@ export class CtrlSuppliers {
       data: data.data,
     };
 
-    res.status(200).json({
+    return {
       status: 'success',
       data: typedDataResponse,
-    });
+    };
   }
 
-  async getAllSuppliers(req: Request, res: Response) {
-    const { limit, page } = req.query;
-
+  async getAllSuppliers(limit: string, page: string) {
     const triggerDate = metrics.getTriggerDate();
     const data = await suppliers.getAllSuppliers(+limit, +page);
     const duration = metrics.getTimeInterval(triggerDate);
@@ -42,17 +38,15 @@ export class CtrlSuppliers {
       data: data.data,
     };
 
-    res.status(200).json({
+    return {
       status: 'success',
       data: typedDataResponse,
-    });
+    };
   }
 
-  async getSupplierById(req: Request, res: Response) {
-    const { id } = req.params;
-
+  async getSupplierById(id: number) {
     const triggerDate = metrics.getTriggerDate();
-    const data = await suppliers.getSupplierById(+id);
+    const data = await suppliers.getSupplierById(id);
     const duration = metrics.getTimeInterval(triggerDate);
 
     const typedDataResponse: TypedDataResponse<SupplierById> = {
@@ -63,9 +57,9 @@ export class CtrlSuppliers {
       data: data.data,
     };
 
-    res.status(200).json({
+    return {
       status: 'success',
       data: typedDataResponse,
-    });
+    };
   }
 }

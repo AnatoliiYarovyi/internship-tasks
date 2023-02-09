@@ -1,5 +1,3 @@
-import { Request, Response } from 'express';
-
 import { Orders } from '../data/repositories/Orders';
 import { metrics } from './metrics';
 import { RowCount, TypedDataResponse } from '../interfaces/Ctrl';
@@ -13,7 +11,7 @@ import {
 const orders = new Orders();
 
 export class CtrlOrders {
-  async getRowCount(req: Request, res: Response) {
+  async getRowCount() {
     const triggerDate = metrics.getTriggerDate();
     const data = await orders.getRowCount();
     const duration = metrics.getTimeInterval(triggerDate);
@@ -26,17 +24,15 @@ export class CtrlOrders {
       data: data.data,
     };
 
-    res.status(200).json({
+    return {
       status: 'success',
       data: typedDataResponse,
-    });
+    };
   }
 
-  async getAllOrders(req: Request, res: Response) {
-    const { limit, page } = req.query;
-
+  async getAllOrders(limit: number, page: number) {
     const triggerDate = metrics.getTriggerDate();
-    const data = await orders.getAllOrders(+limit, +page);
+    const data = await orders.getAllOrders(limit, page);
     const duration = metrics.getTimeInterval(triggerDate);
 
     const typedDataResponse: TypedDataResponse<AllOrders> = {
@@ -47,18 +43,16 @@ export class CtrlOrders {
       data: data.data,
     };
 
-    res.status(200).json({
+    return {
       status: 'success',
       data: typedDataResponse,
-    });
+    };
   }
 
-  async getOrderById(req: Request, res: Response) {
-    const { id } = req.params;
-
+  async getOrderById(id: number) {
     const triggerDateOrder = metrics.getTriggerDate();
     let orderInformation: OrderInformation;
-    const data = await orders.orderInformationById(+id);
+    const data = await orders.orderInformationById(id);
     if (data.data[0].Id === null) {
       orderInformation = {
         sqlString: data.sqlString,
@@ -70,7 +64,7 @@ export class CtrlOrders {
     const durationOrder = metrics.getTimeInterval(triggerDateOrder);
 
     const triggerDateProducts = metrics.getTriggerDate();
-    const productsInOrder = await orders.productsInOrderById(+id);
+    const productsInOrder = await orders.productsInOrderById(id);
     const durationProducts = metrics.getTimeInterval(triggerDateProducts);
 
     const typedOrderResponse: TypedDataResponse<OrderInformationById> = {
@@ -88,10 +82,10 @@ export class CtrlOrders {
       data: productsInOrder.data,
     };
 
-    res.status(200).json({
+    return {
       status: 'success',
       orderInformation: typedOrderResponse,
       productsInOrder: typedProductsResponse,
-    });
+    };
   }
 }

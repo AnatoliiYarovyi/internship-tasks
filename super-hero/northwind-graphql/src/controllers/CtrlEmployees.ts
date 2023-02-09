@@ -1,5 +1,3 @@
-import { Request, Response } from 'express';
-
 import { Employees } from '../data/repositories/Employees';
 import { metrics } from './metrics';
 import { TypedDataResponse, RowCount } from '../interfaces/Ctrl';
@@ -8,7 +6,7 @@ import { AllEmployees, EmployeeById } from '../interfaces/CtrlEmployees';
 const employees = new Employees();
 
 export class CtrlEmployees {
-  async getRowCount(req: Request, res: Response) {
+  async getRowCount() {
     const triggerDate = metrics.getTriggerDate();
     const data = await employees.getRowCount();
     const duration = metrics.getTimeInterval(triggerDate);
@@ -21,17 +19,15 @@ export class CtrlEmployees {
       data: data.data,
     };
 
-    res.status(200).json({
+    return {
       status: 'success',
       data: typedDataResponse,
-    });
+    };
   }
 
-  async getAllEmployees(req: Request, res: Response) {
-    const { limit, page } = req.query;
-
+  async getAllEmployees(limit: number, page: number) {
     const triggerDate = metrics.getTriggerDate();
-    const { sqlString, data } = await employees.getAllEmployees(+limit, +page);
+    const { sqlString, data } = await employees.getAllEmployees(limit, page);
     const duration = metrics.getTimeInterval(triggerDate);
 
     const changedName: AllEmployees = data.reduce(
@@ -57,17 +53,15 @@ export class CtrlEmployees {
       data: changedName,
     };
 
-    res.status(200).json({
+    return {
       status: 'success',
       data: typedDataResponse,
-    });
+    };
   }
 
-  async getEmployeeById(req: Request, res: Response) {
-    const { id } = req.params;
-
+  async getEmployeeById(id: number) {
     const triggerDate = metrics.getTriggerDate();
-    const { sqlString, data } = await employees.getEmployeeById(id);
+    const { sqlString, data } = await employees.getEmployeeById(`${id}`);
 
     let changedName: [] | EmployeeById;
     if (!data[0]) {
@@ -75,25 +69,25 @@ export class CtrlEmployees {
     } else {
       const { ReportsToId } = data[0];
       const { employeeAcceptsReport } =
-        await employees.getEmployeeAcceptsReport(ReportsToId);
+        await employees.getEmployeeAcceptsReport(`${ReportsToId}`);
 
       changedName = data.reduce((acc: EmployeeById, el) => {
         acc.push({
           Id: el.Id,
           Name: `${el.FirstName} ${el.LastName}`,
           Title: el.Title,
-          'Title Of Courtesy': el['Title Of Courtesy'],
-          'Birth Date': el['Birth Date'],
-          'Hire Date': el['Hire Date'],
+          TitleOfCourtesy: el.TitleOfCourtesy,
+          BirthDate: el.BirthDate,
+          HireDate: el.HireDate,
           Address: el.Address,
           City: el.City,
-          'Postal Code': el['Postal Code'],
+          PostalCode: el.PostalCode,
           Country: el.Country,
-          'Home Phone': el['Home Phone'],
+          HomePhone: el.HomePhone,
           Extension: el.Extension,
           Notes: el.Notes,
           ReportsToId: employeeAcceptsReport[0].Id,
-          'Reports To': `${employeeAcceptsReport[0].FirstName} ${employeeAcceptsReport[0].LastName}`,
+          ReportsTo: `${employeeAcceptsReport[0].FirstName} ${employeeAcceptsReport[0].LastName}`,
         });
         return acc;
       }, []);
@@ -108,9 +102,9 @@ export class CtrlEmployees {
       data: changedName,
     };
 
-    res.status(200).json({
+    return {
       status: 'success',
       data: typedDataResponse,
-    });
+    };
   }
 }

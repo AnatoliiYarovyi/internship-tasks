@@ -1,29 +1,15 @@
-import express from 'express';
-import cors from 'cors';
+import { createServer } from 'node:http';
+import { createYoga } from 'graphql-yoga';
+import { schema } from './graphql/schema';
 
-import suppliers from './routes/suppliers';
-import products from './routes/products';
-import orders from './routes/orders';
-import employees from './routes/employees';
-import customers from './routes/customers';
+const { PORT = 4000 } = process.env;
+// Create a Yoga instance with a GraphQL schema.
+const yoga = createYoga({ schema });
 
-const app = express();
-app.use(cors());
-app.use(express.json());
+// Pass it into a server to hook into request handlers.
+const server = createServer(yoga);
 
-app.use('/suppliers', suppliers);
-app.use('/products', products);
-app.use('/orders', orders);
-app.use('/employees', employees);
-app.use('/customers', customers);
-
-app.use((_, res) => {
-  res.status(404).json({ message: 'Not found' });
+// Start the server and you're done!
+server.listen(PORT, () => {
+  console.info(`Server is running on http://localhost:${PORT}/graphql`);
 });
-
-app.use((err, _, res, __) => {
-  const { status = 500, message = 'Server error' } = err;
-  res.status(status).json({ message });
-});
-
-export default app;

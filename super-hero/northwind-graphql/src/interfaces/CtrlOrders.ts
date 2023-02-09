@@ -1,10 +1,10 @@
 type AllOrders = {
   Id: number;
-  'Total Price': number;
+  TotalPrice: number;
   Products: number;
   Quantity: number;
   Shipped: string;
-  'Ship Name': string;
+  ShipName: string;
   City: string;
   Country: string;
 }[];
@@ -16,21 +16,21 @@ type OrderInformation = {
 
 type OrderInformationById = {
   Id: number;
-  'Customer Id': string;
-  'Ship Name': string;
-  'Total Products': number;
-  'Total Quantity': number;
-  'Total Price': number;
-  'Total Discount': number;
-  'Ship Via': string;
+  CustomerId: string;
+  ShipName: string;
+  TotalProducts: number;
+  TotalQuantity: number;
+  TotalPrice: number;
+  TotalDiscount: number;
+  ShipVia: string;
   Freight: number;
-  'Order Date': string;
-  'Required Date': string;
-  'Shipped Date': string;
-  'Ship City': string;
-  'Ship Region': string;
-  'Ship Postal Code': string;
-  'Ship Country': string;
+  OrderDate: string;
+  RequiredDate: string;
+  ShippedDate: string;
+  ShipCity: string;
+  ShipRegion: string;
+  ShipPostalCode: string;
+  ShipCountry: string;
 }[];
 
 type ProductsInOrder = {
@@ -38,8 +38,8 @@ type ProductsInOrder = {
   ProductId: number;
   Product: string;
   Quantity: number;
-  'Order Price': number;
-  'Total Price': number;
+  OrderPrice: number;
+  TotalPrice: number;
   Discount: unknown;
 }[];
 

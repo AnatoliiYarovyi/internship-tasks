@@ -15,7 +15,7 @@ type SupplierById = {
   Address: string;
   City: string;
   Region: string;
-  'Postal Code': string;
+  PostalCode: string;
   Country: string;
   Phone: string;
 }[];

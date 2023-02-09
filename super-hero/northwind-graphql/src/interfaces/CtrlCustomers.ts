@@ -9,16 +9,24 @@ type AllCustomers = {
 
 type CustomersById = {
   Id: string;
-  'Company Name': string;
-  'Contact Name': string;
-  'Contact Title': string;
+  CompanyName: string;
+  ContactName: string;
+  ContactTitle: string;
   Address: string;
   City: string;
-  'Postal Code': string;
+  PostalCode: string;
   Region: string;
   Country: string;
   Phone: string;
   Fax: string;
 }[];
 
-export { AllCustomers, CustomersById };
+type SearchCustomers = {
+  Id: string;
+  Name: string;
+  Contact: string;
+  Title: string;
+  Phone: string;
+}[];
+
+export { AllCustomers, CustomersById, SearchCustomers };

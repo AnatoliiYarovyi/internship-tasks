@@ -31,7 +31,7 @@ export class Products {
       .fields({
         Id: products.productId,
         Name: products.productName,
-        'Qt per unit': products.quantityPerUnit,
+        QtPerUnit: products.quantityPerUnit,
         Price: products.unitPrice,
         Stock: products.unitsInStock,
         Orders: products.unitsOnOrder,
@@ -57,11 +57,11 @@ export class Products {
         ProductName: products.productName,
         SupplierId: suppliers.supplierId,
         Supplier: suppliers.companyName,
-        'Quantity per unit': products.quantityPerUnit,
-        'Unit price': products.unitPrice,
-        'Units in stock': products.unitsInStock,
-        'Units on order': products.unitsOnOrder,
-        'Reorder level': products.reorderLevel,
+        QuantityPerUnit: products.quantityPerUnit,
+        UnitPrice: products.unitPrice,
+        UnitsInStock: products.unitsInStock,
+        UnitsOnOrder: products.unitsOnOrder,
+        ReorderLevel: products.reorderLevel,
         Discontinued: products.discontinued,
       })
       .leftJoin(suppliers, eq(products.supplierId, suppliers.supplierId))
@@ -82,7 +82,7 @@ export class Products {
       .fields({
         Id: products.productId,
         Name: products.productName,
-        'Qt per unit': products.quantityPerUnit,
+        QtPerUnit: products.quantityPerUnit,
         Price: products.unitPrice,
         Stock: products.unitsInStock,
       })

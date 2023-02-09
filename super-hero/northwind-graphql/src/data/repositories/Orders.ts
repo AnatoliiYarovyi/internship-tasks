@@ -31,12 +31,12 @@ export class Orders {
       .select(orders)
       .fields({
         Id: orders.orderId,
-        'Total Price':
+        TotalPrice:
           sql`sum(${orderDetails.quantity} * ${products.unitPrice} * (1 - ${orderDetails.discount}))`.as<number>(),
         Products: sql`count(${orderDetails.orderId})`.as<number>(),
         Quantity: sql`sum(${orderDetails.quantity})`.as<number>(),
         Shipped: orders.shippedDate,
-        'Ship Name': orders.shipName,
+        ShipName: orders.shipName,
         City: orders.shipCity,
         Country: orders.shipCountry,
       })
@@ -61,23 +61,23 @@ export class Orders {
       .select(orders)
       .fields({
         Id: orders.orderId,
-        'Customer Id': orders.customerId,
-        'Ship Name': orders.shipName,
-        'Total Products': sql`count(${orderDetails.orderId})`.as<number>(),
-        'Total Quantity': sql`sum(${orderDetails.quantity})`.as<number>(),
-        'Total Price':
+        CustomerId: orders.customerId,
+        ShipName: orders.shipName,
+        TotalProducts: sql`count(${orderDetails.orderId})`.as<number>(),
+        TotalQuantity: sql`sum(${orderDetails.quantity})`.as<number>(),
+        TotalPrice:
           sql`sum(${orderDetails.quantity} * ${products.unitPrice} * (1 - ${orderDetails.discount}))`.as<number>(),
-        'Total Discount':
+        TotalDiscount:
           sql`sum(${orderDetails.quantity} * ${products.unitPrice} * ${orderDetails.discount})`.as<number>(),
-        'Ship Via': shippers.companyName,
+        ShipVia: shippers.companyName,
         Freight: orders.freight,
-        'Order Date': orders.orderDate,
-        'Required Date': orders.requiredDate,
-        'Shipped Date': orders.shippedDate,
-        'Ship City': orders.shipCity,
-        'Ship Region': orders.shipRegion,
-        'Ship Postal Code': orders.shipPostalCode,
-        'Ship Country': orders.shipCountry,
+        OrderDate: orders.orderDate,
+        RequiredDate: orders.requiredDate,
+        ShippedDate: orders.shippedDate,
+        ShipCity: orders.shipCity,
+        ShipRegion: orders.shipRegion,
+        ShipPostalCode: orders.shipPostalCode,
+        ShipCountry: orders.shipCountry,
       })
       .leftJoin(shippers, eq(orders.shipVia, shippers.shipperId))
       .leftJoin(orderDetails, eq(orders.orderId, orderDetails.orderId))
@@ -101,8 +101,8 @@ export class Orders {
         ProductId: products.productId,
         Product: products.productName,
         Quantity: orderDetails.quantity,
-        'Order Price': products.unitPrice,
-        'Total Price':
+        OrderPrice: products.unitPrice,
+        TotalPrice:
           sql`${orderDetails.quantity} * ${products.unitPrice} * (1 - ${orderDetails.discount})`.as<number>(),
         Discount: sql`100 * ${orderDetails.discount}`,
       })

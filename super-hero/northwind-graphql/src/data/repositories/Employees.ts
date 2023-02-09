@@ -56,14 +56,14 @@ export class Employees {
         FirstName: employees.firstName,
         LastName: employees.lastName,
         Title: employees.title,
-        'Title Of Courtesy': employees.titleOfCourtesy,
-        'Birth Date': employees.birthDate,
-        'Hire Date': employees.hireDate,
+        TitleOfCourtesy: employees.titleOfCourtesy,
+        BirthDate: employees.birthDate,
+        HireDate: employees.hireDate,
         Address: employees.address,
         City: employees.city,
-        'Postal Code': employees.postalCode,
+        PostalCode: employees.postalCode,
         Country: employees.country,
-        'Home Phone': employees.homePhone,
+        HomePhone: employees.homePhone,
         Extension: employees.extension,
         Notes: employees.notes,
         ReportsToId: employees.reportsTo,
@@ -79,7 +79,7 @@ export class Employees {
     return { sqlString, data };
   }
 
-  async getEmployeeAcceptsReport(id: number) {
+  async getEmployeeAcceptsReport(id: string) {
     const queryTemp = this.db
       .select(employees)
       .fields({
@@ -87,7 +87,7 @@ export class Employees {
         FirstName: employees.firstName,
         LastName: employees.lastName,
       })
-      .where(eq(employees.employeeId, `${id}`));
+      .where(eq(employees.employeeId, id));
 
     const employeeAcceptsReport = queryTemp.all();
     const { sql: sqlRaw } = queryTemp.toSQL();

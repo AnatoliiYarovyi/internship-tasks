@@ -53,12 +53,12 @@ export class Customers {
       .select(customers)
       .fields({
         Id: customers.customerId,
-        'Company Name': customers.companyName,
-        'Contact Name': customers.contactName,
-        'Contact Title': customers.contactTitle,
+        CompanyName: customers.companyName,
+        ContactName: customers.contactName,
+        ContactTitle: customers.contactTitle,
         Address: customers.address,
         City: customers.city,
-        'Postal Code': customers.postalCode,
+        PostalCode: customers.postalCode,
         Region: customers.region,
         Country: customers.country,
         Phone: customers.phone,

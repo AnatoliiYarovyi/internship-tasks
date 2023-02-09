@@ -59,7 +59,7 @@ export class Suppliers {
         Address: suppliers.address,
         City: suppliers.city,
         Region: suppliers.region,
-        'Postal Code': suppliers.postalCode,
+        PostalCode: suppliers.postalCode,
         Country: suppliers.country,
         Phone: suppliers.phone,
       })
